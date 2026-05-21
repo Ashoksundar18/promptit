@@ -57,7 +57,7 @@ export default function Sidebar() {
       >
         {/* Logo */}
         <div className="flex items-center justify-center px-4 pt-6 pb-4">
-          <Logo size={sidebarOpen ? 'md' : 'sm'} />
+          <Logo size={sidebarOpen ? 'md' : 'sm'} iconOnly={!sidebarOpen} />
         </div>
 
         {/* Divider */}

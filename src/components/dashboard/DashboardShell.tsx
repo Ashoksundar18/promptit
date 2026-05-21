@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import Sidebar from '@/components/dashboard/Sidebar';
 import UtilityPanel from '@/components/dashboard/UtilityPanel';
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
-  const { sidebarOpen, utilityPanelOpen } = useApp();
+  const { sidebarOpen, utilityPanelOpen, setUtilityPanelOpen } = useApp();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -61,10 +61,21 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto overflow-x-hidden">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden relative">
         <div className="p-4 md:p-6 lg:p-8 pt-16 md:pt-6 lg:pt-8">
           {children}
         </div>
+
+        {/* Right panel toggle — desktop only */}
+        <motion.button
+          onClick={() => setUtilityPanelOpen(!utilityPanelOpen)}
+          className="hidden xl:flex fixed top-4 right-4 z-30 p-2 rounded-xl bg-bg-elevated border border-glass-border text-text-muted hover:text-text-primary hover:border-glass-border-hover transition-colors cursor-pointer items-center justify-center"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          title={utilityPanelOpen ? 'Close panel' : 'Open panel'}
+        >
+          {utilityPanelOpen ? <PanelRightClose size={18} /> : <PanelRightOpen size={18} />}
+        </motion.button>
       </main>
 
       {/* Utility Panel — desktop only (>1280px) */}
