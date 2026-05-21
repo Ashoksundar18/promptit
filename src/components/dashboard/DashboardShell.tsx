@@ -6,6 +6,7 @@ import { Menu, X, PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import Sidebar from '@/components/dashboard/Sidebar';
 import UtilityPanel from '@/components/dashboard/UtilityPanel';
+import MobileBottomNav from '@/components/dashboard/MobileBottomNav';
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const { sidebarOpen, utilityPanelOpen, setUtilityPanelOpen } = useApp();
@@ -13,17 +14,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
   return (
     <div className="h-screen flex overflow-hidden bg-bg-primary transition-colors duration-300">
-      {/* Mobile hamburger button */}
-      <motion.button
-        onClick={() => setMobileMenuOpen(true)}
-        className="fixed top-4 left-4 z-50 p-2 rounded-xl glass md:hidden cursor-pointer text-text-secondary hover:text-text-primary"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <Menu size={22} />
-      </motion.button>
-
-      {/* Mobile overlay */}
+      {/* Mobile overlay for sidebar */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
@@ -55,14 +46,26 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         )}
       </AnimatePresence>
 
-      {/* Desktop/Tablet Sidebar */}
+      {/* Desktop Sidebar */}
       <div className="hidden md:block flex-shrink-0">
         <Sidebar />
       </div>
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto overflow-x-hidden relative">
-        <div className="p-4 md:p-6 lg:p-8 pt-16 md:pt-6 lg:pt-8">
+        {/* Mobile top bar */}
+        <div className="sticky top-0 z-30 md:hidden bg-bg-primary/95 backdrop-blur-md border-b border-glass-border px-4 py-3 flex items-center justify-between">
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary cursor-pointer"
+          >
+            <Menu size={22} />
+          </button>
+          <span className="text-sm font-heading font-semibold text-text-primary">Prompt It</span>
+          <div className="w-[34px]" /> {/* spacer */}
+        </div>
+
+        <div className="p-4 md:p-6 lg:p-8 pb-24 md:pb-8">
           {children}
         </div>
 
@@ -78,7 +81,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         </motion.button>
       </main>
 
-      {/* Utility Panel — desktop only (>1280px) */}
+      {/* Utility Panel — desktop only */}
       <AnimatePresence>
         {utilityPanelOpen && (
           <motion.div
@@ -92,6 +95,9 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
     </div>
   );
 }

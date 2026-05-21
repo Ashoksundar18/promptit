@@ -1,26 +1,50 @@
 {
   "name": "Prompt It",
   "short_name": "PromptIt",
-  "description": "Smarter Prompts. Better Results. Generate optimized AI prompts for ChatGPT, Claude, Gemini, and more.",
+  "description": "Smarter Prompts. Better Results.",
   "start_url": "/dashboard",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "categories": ["productivity", "utilities"],
+  "dir": "ltr",
+  "lang": "en",
   "icons": [
     {
       "src": "/icons/icon-192.svg",
       "sizes": "192x192",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512.svg",
       "sizes": "512x512",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "New Prompt",
+      "short_name": "Prompt",
+      "description": "Generate a new optimized prompt",
+      "url": "/dashboard",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+    }
+  ]
 }
