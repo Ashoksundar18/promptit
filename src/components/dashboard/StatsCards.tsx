@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Star, FolderTree, Flame } from 'lucide-react';
+import { Zap, Star, FolderTree } from 'lucide-react';
 import GlassCard from '@/components/ui/GlassCard';
 import { fetchStats, type StatsData } from '@/lib/api-client';
 
@@ -39,11 +39,11 @@ const statCards: StatCardConfig[] = [
     getValue: (s) => s.mostUsedCategory || 'None yet',
   },
   {
-    id: 'daily-streak',
-    label: 'Daily Streak',
-    icon: Flame,
+    id: 'prompts-today',
+    label: 'Prompts Today',
+    icon: Zap,
     color: '#ec4899',
-    getValue: (s) => s.dailyStreak,
+    getValue: (s) => s.promptsToday,
     isNumber: true,
   },
 ];

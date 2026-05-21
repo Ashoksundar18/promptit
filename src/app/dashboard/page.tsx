@@ -55,7 +55,7 @@ export default function DashboardPage() {
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-2xl md:text-3xl font-heading font-bold text-text-primary">
-          Welcome back{' '}
+          Welcome{' '}
           <span className="gradient-blue-purple gradient-text">✦</span>
         </h1>
         <div className="flex items-center gap-2 mt-1">
@@ -127,12 +127,19 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {(currentView === 'ai-tools' || currentView === 'saved') && (
+      {currentView === 'ai-tools' && (
         <div className="max-w-6xl mx-auto space-y-6">
           <h2 className="text-2xl font-heading font-bold text-text-primary mb-6">
-            {currentView === 'ai-tools' ? 'AI Tools & Templates' : 'Saved Templates'}
+            AI Tools & Templates
           </h2>
           <TemplateGrid onUseTemplate={handleUseTemplate} />
+        </div>
+      )}
+
+      {currentView === 'saved' && (
+        <div className="max-w-4xl mx-auto space-y-6">
+          <h2 className="text-2xl font-heading font-bold text-text-primary mb-6">Saved Prompts</h2>
+          <SearchHistory />
         </div>
       )}
 
@@ -146,14 +153,17 @@ export default function DashboardPage() {
       {(currentView === 'profile' || currentView === 'settings') && (
         <div className="max-w-3xl mx-auto flex items-center justify-center h-[60vh]">
           <GlassCard className="text-center py-16 px-8 max-w-md">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-accent-purple/10 border border-accent-purple/20 flex items-center justify-center">
+              <span className="text-3xl">🚧</span>
+            </div>
             <h3 className="text-2xl font-heading font-bold text-text-primary mb-2 capitalize">
               {currentView}
             </h3>
             <p className="text-sm text-text-muted mb-6">
-              This feature is currently in development and will be available in Phase 2.
+              This feature is currently under development and will be available soon. Stay tuned!
             </p>
             <div className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-accent-purple/10 border border-accent-purple/30">
-              <span className="text-xs font-medium text-accent-purple">Coming Soon</span>
+              <span className="text-xs font-medium text-accent-purple">🔨 Under Development</span>
             </div>
           </GlassCard>
         </div>

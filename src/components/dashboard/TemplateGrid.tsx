@@ -38,7 +38,7 @@ type TemplateGridProps = {
 };
 
 export default function TemplateGrid({ onUseTemplate }: TemplateGridProps) {
-  const { selectedPlatform, selectedCategory } = useApp();
+  const { selectedPlatform, selectedCategory, setCurrentView } = useApp();
   const [showAll, setShowAll] = useState(false);
 
   // Filter templates
@@ -131,7 +131,7 @@ export default function TemplateGrid({ onUseTemplate }: TemplateGridProps) {
 
                   {/* Use Template Button */}
                   <motion.button
-                    onClick={() => onUseTemplate(template.templateText)}
+                    onClick={() => { onUseTemplate(template.templateText); setCurrentView('dashboard'); }}
                     className="w-full py-2 rounded-lg bg-[rgba(255,255,255,0.04)] border border-glass-border text-xs font-medium text-text-secondary hover:text-accent-blue hover:border-accent-blue/30 hover:bg-[rgba(0,212,255,0.05)] transition-all duration-200 cursor-pointer group-hover:border-glass-border-hover"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
