@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
   History,
-  Bot,
   Bookmark,
   Heart,
   User,
@@ -33,11 +32,10 @@ type NavItem = {
 const navItems: NavItem[] = [
   { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { id: 'history', icon: History, label: 'Search History' },
-  { id: 'ai-tools', icon: Bot, label: 'AI Tools' },
   { id: 'saved', icon: Bookmark, label: 'Saved Prompts' },
   { id: 'favorites', icon: Heart, label: 'Favorites' },
-  { id: 'profile', icon: User, label: 'Profile', phase2: true },
-  { id: 'settings', icon: Settings, label: 'Settings', phase2: true },
+  { id: 'profile', icon: User, label: 'Profile' },
+  { id: 'settings', icon: Settings, label: 'Settings' },
 ];
 
 export default function Sidebar() {

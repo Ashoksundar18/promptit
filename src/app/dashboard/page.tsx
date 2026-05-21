@@ -8,36 +8,39 @@ import AISelector from '@/components/dashboard/AISelector';
 import CategorySelector from '@/components/dashboard/CategorySelector';
 import PromptGenerator from '@/components/dashboard/PromptGenerator';
 import PromptOutput from '@/components/dashboard/PromptOutput';
-import TemplateGrid from '@/components/dashboard/TemplateGrid';
 import StatsCards from '@/components/dashboard/StatsCards';
 import type { GeneratedPrompt } from '@/lib/ai-engine';
 
 import SearchHistory from '@/components/dashboard/SearchHistory';
-import GlassCard from '@/components/ui/GlassCard';
+import ProfileView from '@/components/dashboard/ProfileView';
+import SettingsView from '@/components/dashboard/SettingsView';
 
 export default function DashboardPage() {
-  const { selectedPlatform, currentView } = useApp();
+  const { selectedPlatform, currentView, history, toggleFavorite } = useApp();
   const [generatedPrompt, setGeneratedPrompt] = useState<GeneratedPrompt | null>(null);
   const [promptInput, setPromptInput] = useState('');
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [lastSavedId, setLastSavedId] = useState<string | null>(null);
 
   const handleGenerated = useCallback((result: GeneratedPrompt) => {
     setGeneratedPrompt(result);
-    setIsFavorite(false);
+    setLastSavedId(null);
   }, []);
 
   const handleRegenerate = useCallback(() => {
     setGeneratedPrompt(null);
+    setLastSavedId(null);
   }, []);
 
-  const handleUseTemplate = useCallback((template: string) => {
-    setPromptInput(template);
-    setGeneratedPrompt(null);
-    document.getElementById('prompt-generator')?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-    });
-  }, []);
+  // Find the most recently saved prompt from history to toggle its favorite status
+  const handleSavePrompt = useCallback(() => {
+    if (history.length > 0) {
+      const latest = history[0];
+      toggleFavorite(latest.id, latest.isFavorite);
+      setLastSavedId(latest.id);
+    }
+  }, [history, toggleFavorite]);
+
+  const isSaved = lastSavedId ? history.find(h => h.id === lastSavedId)?.isFavorite ?? false : false;
 
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
@@ -110,8 +113,8 @@ export default function DashboardPage() {
         result={generatedPrompt}
         platform={selectedPlatform}
         onRegenerate={handleRegenerate}
-        isFavorite={isFavorite}
-        onToggleFavorite={() => setIsFavorite(!isFavorite)}
+        isFavorite={isSaved}
+        onToggleFavorite={handleSavePrompt}
       />
     </div>
   );
@@ -127,19 +130,10 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {currentView === 'ai-tools' && (
-        <div className="max-w-6xl mx-auto space-y-6">
-          <h2 className="text-2xl font-heading font-bold text-text-primary mb-6">
-            AI Tools & Templates
-          </h2>
-          <TemplateGrid onUseTemplate={handleUseTemplate} />
-        </div>
-      )}
-
       {currentView === 'saved' && (
         <div className="max-w-4xl mx-auto space-y-6">
           <h2 className="text-2xl font-heading font-bold text-text-primary mb-6">Saved Prompts</h2>
-          <SearchHistory />
+          <SearchHistory favoritesOnly />
         </div>
       )}
 
@@ -150,24 +144,9 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {(currentView === 'profile' || currentView === 'settings') && (
-        <div className="max-w-3xl mx-auto flex items-center justify-center h-[60vh]">
-          <GlassCard className="text-center py-16 px-8 max-w-md">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-accent-purple/10 border border-accent-purple/20 flex items-center justify-center">
-              <span className="text-3xl">🚧</span>
-            </div>
-            <h3 className="text-2xl font-heading font-bold text-text-primary mb-2 capitalize">
-              {currentView}
-            </h3>
-            <p className="text-sm text-text-muted mb-6">
-              This feature is currently under development and will be available soon. Stay tuned!
-            </p>
-            <div className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-accent-purple/10 border border-accent-purple/30">
-              <span className="text-xs font-medium text-accent-purple">🔨 Under Development</span>
-            </div>
-          </GlassCard>
-        </div>
-      )}
+      {currentView === 'profile' && <ProfileView />}
+
+      {currentView === 'settings' && <SettingsView />}
     </div>
   );
 }
