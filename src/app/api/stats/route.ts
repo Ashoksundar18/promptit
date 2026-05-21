@@ -73,11 +73,11 @@ export async function GET() {
       favoritePlatform,
       mostUsedCategory,
       dailyStreak: userStats?.dailyStreak ?? 0,
-      platformBreakdown: platformCounts.map((p) => ({
+      platformBreakdown: platformCounts.map((p: any) => ({
         platform: p.platform,
         count: p._count.platform,
       })),
-      categoryBreakdown: categoryCounts.map((c) => ({
+      categoryBreakdown: categoryCounts.map((c: any) => ({
         category: c.category,
         count: c._count.category,
       })),
