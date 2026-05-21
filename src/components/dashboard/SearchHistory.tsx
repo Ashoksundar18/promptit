@@ -15,6 +15,7 @@ import {
   Sparkles,
   Video,
   Code2,
+  Rocket,
   X,
 } from 'lucide-react';
 import GlassCard from '@/components/ui/GlassCard';
@@ -28,6 +29,7 @@ const platformIcons: Record<string, React.ElementType> = {
   perplexity: Search,
   sora: Video,
   copilot: Code2,
+  antigravity: Rocket,
 };
 
 const platformColors: Record<string, string> = {
@@ -37,6 +39,7 @@ const platformColors: Record<string, string> = {
   perplexity: '#20b2aa',
   sora: '#ec4899',
   copilot: '#0078d4',
+  antigravity: '#8b5cf6',
 };
 
 const filterTabs = [
@@ -47,6 +50,7 @@ const filterTabs = [
   { id: 'perplexity', label: 'Perplexity' },
   { id: 'sora', label: 'Sora' },
   { id: 'copilot', label: 'Copilot' },
+  { id: 'antigravity', label: 'Antigravity' },
 ];
 
 export default function SearchHistory({ favoritesOnly = false }: { favoritesOnly?: boolean }) {

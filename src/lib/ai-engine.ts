@@ -3,7 +3,7 @@
 //  Core prompt optimization & platform routing
 // ═══════════════════════════════════════════════
 
-export type AIPlatform = 'chatgpt' | 'claude' | 'gemini' | 'perplexity' | 'sora' | 'copilot';
+export type AIPlatform = 'chatgpt' | 'claude' | 'gemini' | 'perplexity' | 'sora' | 'copilot' | 'antigravity';
 
 export type PromptCategory = 'study' | 'content' | 'developer' | 'business' | 'creative';
 
@@ -554,6 +554,50 @@ ${categoryCodeFocus[category]}
 - Test file skeleton with key test cases`;
 }
 
+// ─── Antigravity prompt builder ───
+
+function buildAntigravityPrompt(input: string, category: PromptCategory): string {
+  const catRole = CATEGORY_ROLES[category];
+  const keywords = extractKeywords(input);
+  const subject = inferSubject(input);
+  const complexity = estimateComplexity(input);
+
+  return `[ANTIGRAVITY AGENTIC PROMPT]
+
+## Agent Configuration
+- **Role:** ${catRole.role}
+- **Mode:** Agentic — multi-step reasoning with tool use
+- **Tone:** ${catRole.tone}
+- **Complexity:** ${complexity}
+
+## Context
+${catRole.context}
+- Topic: ${subject}
+- Key concepts: ${keywords.slice(0, 6).join(', ') || 'general'}
+
+## Task
+${input}
+
+## Execution Plan
+1. **Research Phase:** Analyze the request, identify key requirements and constraints
+2. **Planning Phase:** Break down the task into actionable sub-tasks
+3. **Execution Phase:** Complete each sub-task with full reasoning shown
+4. **Verification Phase:** Review output for accuracy, completeness, and quality
+
+## Output Requirements
+- Show your reasoning process step-by-step
+- Use tools and code execution when beneficial
+- Provide comprehensive, production-ready output
+- Include confidence levels for claims or recommendations
+- Suggest follow-up actions or improvements
+
+## Quality Standards
+- Accuracy: Verify facts and cross-reference information
+- Completeness: Address all aspects of the request
+- Clarity: Use clear structure with headings and bullet points
+- Actionability: Every recommendation should be immediately actionable`;
+}
+
 // ─── Tip generation ───
 
 function generateTips(platform: AIPlatform, category: PromptCategory, complexity: string): string[] {
@@ -599,6 +643,13 @@ function generateTips(platform: AIPlatform, category: PromptCategory, complexity
       'Ask for tests alongside implementation — Copilot generates better code when testing is expected',
       'Specify your dependency preferences (e.g., "use native APIs over lodash")',
       'Break complex implementations into smaller, focused prompts for better results',
+    ],
+    antigravity: [
+      'Antigravity excels with agentic multi-step tasks — describe the end goal, not just the first step',
+      'Let Antigravity use its tools — ask it to research, code, and verify in one flow',
+      'Provide context about your project for better-tailored solutions',
+      'Ask Antigravity to explain its reasoning — it produces higher quality output when it shows its work',
+      'Use Antigravity for complex tasks that require planning and iteration',
     ],
   };
 
@@ -650,6 +701,7 @@ function calculateQualityScore(input: string, platform: AIPlatform): number {
     perplexity: /\b(research|source|citation|evidence|data)\b/i,
     sora: /\b(scene|camera|light|visual|cinematic|motion)\b/i,
     copilot: /\b(code|function|class|type|test|implement)\b/i,
+    antigravity: /\b(agent|plan|research|build|create|design|analyze)\b/i,
   };
 
   if (platformBonusPatterns[platform].test(input)) score += 5;
@@ -687,6 +739,7 @@ export function generateOptimizedPrompt(
     perplexity: buildPerplexityPrompt,
     sora: buildSoraPrompt,
     copilot: buildCopilotPrompt,
+    antigravity: buildAntigravityPrompt,
   };
 
   const optimizedPrompt = builders[platform](trimmedInput, category);

@@ -8,6 +8,7 @@ import {
   Search,
   Video,
   Code2,
+  Rocket,
 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import type { AIPlatform } from '@/lib/ai-engine';
@@ -26,6 +27,7 @@ const platforms: PlatformConfig[] = [
   { id: 'perplexity', name: 'Perplexity', icon: Search, color: '#20b2aa' },
   { id: 'sora', name: 'Sora', icon: Video, color: '#ec4899' },
   { id: 'copilot', name: 'Copilot', icon: Code2, color: '#0078d4' },
+  { id: 'antigravity', name: 'Antigravity', icon: Rocket, color: '#8b5cf6' },
 ];
 
 export default function AISelector() {

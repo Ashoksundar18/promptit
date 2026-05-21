@@ -19,6 +19,7 @@ const platformNames: Record<string, string> = {
   perplexity: 'Perplexity',
   sora: 'Sora',
   copilot: 'Copilot',
+  antigravity: 'Antigravity',
 };
 
 const platformColors: Record<string, string> = {
@@ -28,6 +29,7 @@ const platformColors: Record<string, string> = {
   perplexity: '#20b2aa',
   sora: '#ec4899',
   copilot: '#0078d4',
+  antigravity: '#8b5cf6',
 };
 
 type AttachedFile = {

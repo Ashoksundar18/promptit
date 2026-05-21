@@ -9,6 +9,7 @@ import {
   Search,
   Video,
   Code2,
+  Rocket,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -68,6 +69,14 @@ const platforms: PlatformCard[] = [
     description:
       'Code generation, debugging, and software development acceleration.',
     slug: 'copilot',
+  },
+  {
+    name: 'Antigravity',
+    accent: '#8b5cf6',
+    icon: Rocket,
+    description:
+      'Agentic AI for complex multi-step tasks, planning, research, and building.',
+    slug: 'antigravity',
   },
 ];
 

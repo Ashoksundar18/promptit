@@ -23,6 +23,7 @@ const platformBadges: Record<string, { name: string; color: string }> = {
   perplexity: { name: 'Perplexity', color: '#20b2aa' },
   sora: { name: 'Sora', color: '#ec4899' },
   copilot: { name: 'Copilot', color: '#0078d4' },
+  antigravity: { name: 'Antigravity', color: '#8b5cf6' },
 };
 
 type PromptOutputProps = {

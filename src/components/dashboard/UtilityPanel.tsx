@@ -14,6 +14,7 @@ import {
   Search,
   Video,
   Code2,
+  Rocket,
 } from 'lucide-react';
 import GlassCard from '@/components/ui/GlassCard';
 import { useApp } from '@/context/AppContext';
@@ -26,6 +27,7 @@ const platformIcons: Record<string, React.ElementType> = {
   perplexity: Search,
   sora: Video,
   copilot: Code2,
+  antigravity: Rocket,
 };
 
 const platformColors: Record<string, string> = {
@@ -35,6 +37,7 @@ const platformColors: Record<string, string> = {
   perplexity: '#20b2aa',
   sora: '#ec4899',
   copilot: '#0078d4',
+  antigravity: '#8b5cf6',
 };
 
 type PlatformTips = Record<string, string[]>;
@@ -75,6 +78,12 @@ const platformTips: PlatformTips = {
     'Describe edge cases and error handling needs',
     'Reference specific frameworks or libraries',
     'Include test requirements in your prompt',
+  ],
+  antigravity: [
+    'Describe the end goal — let it plan the steps',
+    'Ask it to research before implementing',
+    'Provide project context for tailored solutions',
+    'Use it for complex multi-step workflows',
   ],
 };
 

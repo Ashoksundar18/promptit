@@ -265,6 +265,7 @@ body {
 .platform-perplexity { --platform-color: #20b2aa; }
 .platform-sora { --platform-color: #ec4899; }
 .platform-copilot { --platform-color: #0078d4; }
+.platform-antigravity { --platform-color: #8b5cf6; }
 
 /* ─── Selection ─── */
 ::selection {
