@@ -38,7 +38,7 @@ export default function AISelector() {
       <h3 className="text-sm font-medium text-text-secondary mb-3 font-heading uppercase tracking-wider">
         Select AI Platform
       </h3>
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
+      <div className="flex gap-2 overflow-x-auto pb-2">
         {platforms.map((platform) => {
           const Icon = platform.icon;
           const isSelected = selectedPlatform === platform.id;
@@ -48,65 +48,29 @@ export default function AISelector() {
               key={platform.id}
               onClick={() => setSelectedPlatform(platform.id)}
               className={`
-                relative flex items-center gap-2.5 px-4 py-3 rounded-xl
-                border transition-colors duration-200 cursor-pointer
-                flex-shrink-0 min-w-[140px]
+                flex items-center gap-2 px-3 py-2.5 rounded-xl
+                border transition-all duration-200 cursor-pointer
+                flex-shrink-0 text-sm
                 ${isSelected
-                  ? 'bg-[rgba(255,255,255,0.06)] border-transparent'
-                  : 'glass hover:bg-glass-bg-hover hover:border-glass-border-hover'
+                  ? 'border-transparent font-medium'
+                  : 'border-glass-border bg-bg-elevated hover:border-glass-border-hover'
                 }
               `}
               style={isSelected ? {
-                borderColor: `${platform.color}60`,
-                boxShadow: `0 0 12px ${platform.color}30, 0 0 30px ${platform.color}10, inset 0 0 8px ${platform.color}08`,
-                background: `linear-gradient(135deg, ${platform.color}12, ${platform.color}06)`,
+                backgroundColor: `${platform.color}12`,
+                borderColor: `${platform.color}30`,
+                color: platform.color,
               } : {}}
-              whileHover={{ scale: isSelected ? 1.0 : 1.03 }}
               whileTap={{ scale: 0.97 }}
-              layout
             >
-              {/* Selection indicator */}
-              {isSelected && (
-                <motion.div
-                  layoutId="ai-platform-indicator"
-                  className="absolute inset-0 rounded-xl"
-                  style={{
-                    border: `1px solid ${platform.color}50`,
-                    boxShadow: `0 0 15px ${platform.color}25`,
-                  }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-
-              <div
-                className="p-1.5 rounded-lg flex-shrink-0"
-                style={{
-                  backgroundColor: `${platform.color}18`,
-                }}
-              >
-                <Icon
-                  size={18}
-                  style={{ color: isSelected ? platform.color : undefined }}
-                  className={!isSelected ? 'text-text-secondary' : ''}
-                />
-              </div>
-
-              <span
-                className={`text-sm font-medium whitespace-nowrap ${isSelected ? 'text-text-primary' : 'text-text-secondary'}`}
-                style={isSelected ? { color: platform.color } : {}}
-              >
+              <Icon
+                size={16}
+                style={isSelected ? { color: platform.color } : undefined}
+                className={!isSelected ? 'text-text-muted' : ''}
+              />
+              <span className={!isSelected ? 'text-text-secondary' : ''}>
                 {platform.name}
               </span>
-
-              {/* Active dot */}
-              {isSelected && (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="w-1.5 h-1.5 rounded-full ml-auto flex-shrink-0"
-                  style={{ backgroundColor: platform.color, boxShadow: `0 0 6px ${platform.color}` }}
-                />
-              )}
             </motion.button>
           );
         })}

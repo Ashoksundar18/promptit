@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import GlassCard from '@/components/ui/GlassCard';
 import {
   Zap,
   Layers,
@@ -9,150 +8,91 @@ import {
   History,
   Copy,
   FolderTree,
-  type LucideIcon,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 interface Feature {
   title: string;
   description: string;
   icon: LucideIcon;
-  accent: string;
 }
 
 const features: Feature[] = [
   {
     title: 'AI-Optimized Prompts',
-    description:
-      'Generate prompts specifically optimized for each AI platform, maximizing output quality and relevance.',
+    description: 'Prompts specifically tuned for each platform, maximizing output quality.',
     icon: Zap,
-    accent: 'var(--accent-blue)',
   },
   {
     title: 'Multi-Platform Support',
-    description:
-      'One hub for ChatGPT, Claude, Gemini, Perplexity, Sora, and Copilot — switch seamlessly between platforms.',
+    description: 'One hub for 7 AI platforms — switch seamlessly between them.',
     icon: Layers,
-    accent: 'var(--accent-purple)',
   },
   {
     title: 'Smart Templates',
-    description:
-      'Pre-built templates across 5 categories to jumpstart your prompt engineering workflow instantly.',
+    description: 'Pre-built templates across 5 categories to jumpstart your workflow.',
     icon: LayoutTemplate,
-    accent: 'var(--accent-pink)',
   },
   {
     title: 'Prompt History',
-    description:
-      'Track and revisit all your generated prompts. Never lose a great prompt again.',
+    description: 'Track and revisit all your generated prompts in one place.',
     icon: History,
-    accent: 'var(--accent-green)',
   },
   {
     title: 'One-Click Copy',
-    description:
-      'Copy optimized prompts to your clipboard instantly and paste them into any AI platform.',
+    description: 'Copy optimized prompts instantly and paste into any AI tool.',
     icon: Copy,
-    accent: 'var(--accent-orange)',
   },
   {
     title: 'Category System',
-    description:
-      'Organize prompts with Study, Content, Developer, Business, and Creative modes for every use case.',
+    description: 'Organize prompts by Study, Content, Developer, Business, or Creative.',
     icon: FolderTree,
-    accent: 'var(--accent-teal)',
   },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.97 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const },
-  },
-};
-
 export default function Features() {
   return (
-    <section className="relative py-24 md:py-32 px-6">
-      {/* Background glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute bottom-0 right-1/4 w-[600px] h-[400px] rounded-full bg-accent-blue/[0.03] blur-[100px]" />
-        <div className="absolute top-1/4 left-0 w-[400px] h-[400px] rounded-full bg-accent-pink/[0.03] blur-[100px]" />
-      </div>
-
-      <div className="relative z-10 max-w-6xl mx-auto">
-        {/* Section heading */}
+    <section className="py-20 px-6 bg-bg-primary">
+      <div className="max-w-4xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          viewport={{ once: true }}
+          className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-5xl font-heading font-bold neon-text-blue">
-            Everything You Need
+          <h2 className="text-3xl md:text-4xl font-heading font-bold text-text-primary">
+            Features
           </h2>
-          <p className="mt-4 text-text-secondary text-lg max-w-xl mx-auto">
-            A complete toolkit for crafting perfect prompts across every AI
-            platform.
+          <p className="mt-3 text-text-secondary max-w-lg mx-auto">
+            Everything you need to create better AI prompts.
           </p>
         </motion.div>
 
-        {/* Feature cards grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-50px' }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {features.map((feature) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {features.map((feature, i) => {
             const Icon = feature.icon;
             return (
-              <motion.div key={feature.title} variants={cardVariants}>
-                <GlassCard>
-                  <div className="p-6">
-                    {/* Icon */}
-                    <div
-                      className="w-11 h-11 rounded-lg flex items-center justify-center mb-4"
-                      style={{
-                        background: `color-mix(in srgb, ${feature.accent} 12%, transparent)`,
-                        border: `1px solid color-mix(in srgb, ${feature.accent} 20%, transparent)`,
-                      }}
-                    >
-                      <Icon
-                        className="w-5 h-5"
-                        style={{ color: feature.accent }}
-                      />
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="text-lg font-heading font-semibold text-text-primary mb-2">
-                      {feature.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-sm text-text-secondary leading-relaxed">
-                      {feature.description}
-                    </p>
-                  </div>
-                </GlassCard>
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                className="p-5 rounded-2xl border border-glass-border bg-bg-elevated"
+              >
+                <div className="w-10 h-10 rounded-lg bg-accent-blue/10 flex items-center justify-center mb-3">
+                  <Icon size={20} className="text-accent-blue" />
+                </div>
+                <h3 className="text-sm font-semibold text-text-primary mb-1.5">
+                  {feature.title}
+                </h3>
+                <p className="text-xs text-text-muted leading-relaxed">
+                  {feature.description}
+                </p>
               </motion.div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
