@@ -1,26 +1,289 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════
+   PROMPT IT — Design System
+   Futuristic Dark Theme + Glassmorphism + Neon
+   ═══════════════════════════════════════════════ */
+
+/* ─── Color Tokens ─── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-tertiary: #1a1a2e;
+  --bg-elevated: #1e1e30;
+
+  --accent-blue: #00d4ff;
+  --accent-purple: #8b5cf6;
+  --accent-pink: #ec4899;
+  --accent-green: #10b981;
+  --accent-orange: #f59e0b;
+  --accent-teal: #14b8a6;
+
+  --text-primary: #f0f0f5;
+  --text-secondary: #8888aa;
+  --text-muted: #555577;
+
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-bg-hover: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(255, 255, 255, 0.15);
+  --glass-blur: 20px;
+
+  --shadow-neon-blue: 0 0 20px rgba(0, 212, 255, 0.3);
+  --shadow-neon-purple: 0 0 20px rgba(139, 92, 246, 0.3);
+  --shadow-neon-pink: 0 0 20px rgba(236, 72, 153, 0.3);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  --background: var(--bg-primary);
+  --foreground: var(--text-primary);
+
+  /* Sidebar dimensions */
+  --sidebar-width: 260px;
+  --sidebar-collapsed: 72px;
+  --utility-width: 300px;
 }
 
+/* ─── Tailwind Theme Integration ─── */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-purple: var(--accent-purple);
+  --color-accent-pink: var(--accent-pink);
+  --color-accent-green: var(--accent-green);
+  --color-accent-orange: var(--accent-orange);
+  --color-accent-teal: var(--accent-teal);
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-tertiary: var(--bg-tertiary);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-outfit);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base Styles ─── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(136, 136, 170, 0.3) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 170, 0.3);
+  border-radius: 3px;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ─── Glassmorphism Utilities ─── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+}
+
+.glass-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-hover:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.glass-panel {
+  background: rgba(18, 18, 26, 0.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+}
+
+/* ─── Neon Glow Effects ─── */
+.neon-text-blue {
+  color: var(--accent-blue);
+  text-shadow:
+    0 0 7px rgba(0, 212, 255, 0.6),
+    0 0 20px rgba(0, 212, 255, 0.3),
+    0 0 40px rgba(0, 212, 255, 0.15);
+}
+
+.neon-text-purple {
+  color: var(--accent-purple);
+  text-shadow:
+    0 0 7px rgba(139, 92, 246, 0.6),
+    0 0 20px rgba(139, 92, 246, 0.3),
+    0 0 40px rgba(139, 92, 246, 0.15);
+}
+
+.neon-text-pink {
+  color: var(--accent-pink);
+  text-shadow:
+    0 0 7px rgba(236, 72, 153, 0.6),
+    0 0 20px rgba(236, 72, 153, 0.3);
+}
+
+.neon-border-blue {
+  box-shadow:
+    0 0 5px rgba(0, 212, 255, 0.4),
+    0 0 20px rgba(0, 212, 255, 0.15),
+    inset 0 0 5px rgba(0, 212, 255, 0.05);
+  border-color: rgba(0, 212, 255, 0.4);
+}
+
+.neon-border-purple {
+  box-shadow:
+    0 0 5px rgba(139, 92, 246, 0.4),
+    0 0 20px rgba(139, 92, 246, 0.15),
+    inset 0 0 5px rgba(139, 92, 246, 0.05);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+/* ─── Gradient Utilities ─── */
+.gradient-blue-purple {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+}
+
+.gradient-purple-pink {
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+}
+
+.gradient-text {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-mesh {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 50%),
+    var(--bg-primary);
+}
+
+/* ─── Animation Utilities ─── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(0, 212, 255, 0.4), 0 0 20px rgba(0, 212, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.6), 0 0 40px rgba(0, 212, 255, 0.2);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* ─── Interactive States ─── */
+.interactive {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.interactive:hover {
+  transform: translateY(-1px);
+}
+
+.interactive:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ─── Platform Accent Colors ─── */
+.platform-chatgpt { --platform-color: #10a37f; }
+.platform-claude { --platform-color: #d97706; }
+.platform-gemini { --platform-color: #4285f4; }
+.platform-perplexity { --platform-color: #20b2aa; }
+.platform-sora { --platform-color: #ec4899; }
+.platform-copilot { --platform-color: #0078d4; }
+
+/* ─── Selection ─── */
+::selection {
+  background: rgba(0, 212, 255, 0.3);
+  color: white;
 }
