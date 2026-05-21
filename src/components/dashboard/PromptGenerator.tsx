@@ -65,7 +65,7 @@ export default function PromptGenerator({
       optimizedPrompt: result.optimizedPrompt,
       platform: selectedPlatform,
       category: selectedCategory,
-      isFavorite: false,
+      qualityScore: result.qualityScore ?? 0,
     });
 
     onGenerated(result);

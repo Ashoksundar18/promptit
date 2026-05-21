@@ -95,8 +95,9 @@ export default function UtilityPanel() {
   const tips = platformTips[selectedPlatform] || platformTips.chatgpt;
   const recentHistory = history.slice(0, 5);
 
-  const formatTime = (timestamp: number) => {
-    const diff = Date.now() - timestamp;
+  const formatTime = (timestamp: string | number) => {
+    const date = new Date(timestamp);
+    const diff = Date.now() - date.getTime();
     const mins = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
     if (mins < 1) return 'Just now';
@@ -242,7 +243,7 @@ export default function UtilityPanel() {
                           {item.userInput}
                         </span>
                         <span className="text-[9px] text-text-muted flex-shrink-0">
-                          {formatTime(item.timestamp)}
+                          {formatTime(item.createdAt)}
                         </span>
                       </motion.button>
                     );

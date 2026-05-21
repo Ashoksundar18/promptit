@@ -79,7 +79,7 @@ export default function SearchHistory({ favoritesOnly = false }: { favoritesOnly
     return items;
   }, [history, activeFilter, searchQuery]);
 
-  const formatTime = (timestamp: number) => {
+  const formatTime = (timestamp: string | number) => {
     const date = new Date(timestamp);
     const now = new Date();
     const diff = now.getTime() - date.getTime();
@@ -195,7 +195,7 @@ export default function SearchHistory({ favoritesOnly = false }: { favoritesOnly
                         <div className="flex items-center gap-2 mt-1">
                           <Clock size={10} className="text-text-muted" />
                           <span className="text-[10px] text-text-muted">
-                            {formatTime(item.timestamp)}
+                            {formatTime(item.createdAt)}
                           </span>
                         </div>
 
