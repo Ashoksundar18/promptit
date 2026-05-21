@@ -31,6 +31,7 @@ export const metadata: Metadata = {
     "prompt generator",
   ],
   authors: [{ name: "Prompt It" }],
+  manifest: "/manifest.json",
   openGraph: {
     title: "Prompt It — Smarter Prompts. Better Results.",
     description:
@@ -41,6 +42,8 @@ export const metadata: Metadata = {
 
 import AuthProvider from "@/components/providers/AuthProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import ServiceWorkerRegister from "@/components/providers/ServiceWorkerRegister";
+import InstallPrompt from "@/components/ui/InstallPrompt";
 
 export default function RootLayout({
   children,
@@ -53,10 +56,19 @@ export default function RootLayout({
       className={`${inter.variable} ${outfit.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Prompt It" />
+        <meta name="theme-color" content="#3b82f6" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
+      </head>
       <body className="min-h-screen bg-bg-primary text-text-primary font-sans antialiased">
         <ThemeProvider>
           <AuthProvider>
             {children}
+            <ServiceWorkerRegister />
+            <InstallPrompt />
           </AuthProvider>
         </ThemeProvider>
       </body>

@@ -15,6 +15,7 @@ import {
   AlertTriangle,
   Sun,
   Moon,
+  Download,
 } from 'lucide-react';
 import Logo from '@/components/ui/Logo';
 import { useApp } from '@/context/AppContext';
@@ -144,6 +145,35 @@ export default function Sidebar() {
                   className="text-sm whitespace-nowrap overflow-hidden"
                 >
                   {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </motion.button>
+        </div>
+
+        {/* Install App */}
+        <div className="px-3 pb-1">
+          <motion.button
+            onClick={() => {
+              // Trigger the browser's install prompt if available
+              const event = new CustomEvent('trigger-install');
+              window.dispatchEvent(event);
+            }}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-text-secondary hover:bg-accent-green/10 hover:text-accent-green transition-colors duration-200 cursor-pointer"
+            whileHover={{ x: 2 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <Download size={20} className="flex-shrink-0" />
+            <AnimatePresence mode="wait">
+              {sidebarOpen && (
+                <motion.span
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="text-sm whitespace-nowrap overflow-hidden"
+                >
+                  Install App
                 </motion.span>
               )}
             </AnimatePresence>
