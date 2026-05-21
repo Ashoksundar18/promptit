@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { Wand2 } from 'lucide-react';
+import { useState, useCallback, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Wand2, Paperclip, X, FileText, Image } from 'lucide-react';
 import GlassCard from '@/components/ui/GlassCard';
 import NeonButton from '@/components/ui/NeonButton';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -30,6 +30,13 @@ const platformColors: Record<string, string> = {
   copilot: '#0078d4',
 };
 
+type AttachedFile = {
+  name: string;
+  size: number;
+  type: string;
+  content: string;
+};
+
 type PromptGeneratorProps = {
   onGenerated: (prompt: GeneratedPrompt) => void;
   inputValue: string;
@@ -43,19 +50,84 @@ export default function PromptGenerator({
 }: PromptGeneratorProps) {
   const { selectedPlatform, selectedCategory, addToHistory } = useApp();
   const [isGenerating, setIsGenerating] = useState(false);
+  const [attachedFile, setAttachedFile] = useState<AttachedFile | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const maxChars = 2000;
+
+  const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Max 5MB
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File must be under 5MB');
+      return;
+    }
+
+    const allowedTypes = [
+      'text/plain', 'text/markdown', 'text/csv', 'text/html',
+      'application/json', 'application/pdf',
+      'image/png', 'image/jpeg', 'image/gif', 'image/webp',
+    ];
+
+    const isAllowed = allowedTypes.some(t => file.type.startsWith(t.split('/')[0]) || file.type === t);
+    if (!isAllowed && !file.name.match(/\.(txt|md|csv|json|ts|tsx|js|jsx|py|java|cpp|c|html|css)$/i)) {
+      alert('Unsupported file type. Please use text, code, CSV, JSON, or image files.');
+      return;
+    }
+
+    try {
+      let content = '';
+      if (file.type.startsWith('image/')) {
+        content = `[Attached image: ${file.name} (${(file.size / 1024).toFixed(1)}KB)]`;
+      } else {
+        content = await file.text();
+        // Limit content length
+        if (content.length > 10000) {
+          content = content.substring(0, 10000) + '\n\n[...content truncated at 10,000 characters]';
+        }
+      }
+
+      setAttachedFile({
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        content,
+      });
+    } catch {
+      alert('Failed to read file');
+    }
+
+    // Reset input
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }, []);
+
+  const removeFile = useCallback(() => {
+    setAttachedFile(null);
+  }, []);
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes}B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
+  };
 
   const handleGenerate = useCallback(async () => {
     if (!inputValue.trim() || isGenerating) return;
 
     setIsGenerating(true);
 
-    // Simulate processing delay for effect
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+
+    // Combine input with file content if attached
+    let fullInput = inputValue;
+    if (attachedFile) {
+      fullInput += `\n\n--- Attached File: ${attachedFile.name} ---\n${attachedFile.content}`;
+    }
 
     const result = generateOptimizedPrompt(
-      inputValue,
+      fullInput,
       selectedPlatform,
       selectedCategory
     );
@@ -70,9 +142,9 @@ export default function PromptGenerator({
 
     onGenerated(result);
     setIsGenerating(false);
-  }, [inputValue, selectedPlatform, selectedCategory, isGenerating, addToHistory, onGenerated]);
+  }, [inputValue, attachedFile, selectedPlatform, selectedCategory, isGenerating, addToHistory, onGenerated]);
 
-  const platformColor = platformColors[selectedPlatform] || '#00d4ff';
+  const platformColor = platformColors[selectedPlatform] || '#3b82f6';
 
   return (
     <GlassCard className="relative overflow-hidden">
@@ -94,11 +166,32 @@ export default function PromptGenerator({
           onChange={(e) => onInputChange(e.target.value.slice(0, maxChars))}
           placeholder="Describe what you need... e.g., 'Write a blog post about quantum computing for beginners'"
           rows={5}
-          className="w-full px-4 py-3 rounded-xl bg-[rgba(255,255,255,0.03)] border border-glass-border text-text-primary placeholder:text-text-muted resize-none focus:outline-none focus:border-accent-blue/40 focus:shadow-[0_0_12px_rgba(0,212,255,0.15)] transition-all duration-300 text-sm leading-relaxed"
+          className="w-full px-4 py-3 rounded-xl bg-bg-tertiary border border-glass-border text-text-primary placeholder:text-text-muted resize-none focus:outline-none focus:border-accent-blue/50 transition-all duration-200 text-sm leading-relaxed"
         />
 
-        {/* Character count */}
-        <div className="flex justify-end mt-1.5">
+        {/* Bottom row: file attach + char count */}
+        <div className="flex items-center justify-between mt-2">
+          <div className="flex items-center gap-2">
+            {/* File Upload Button */}
+            <motion.button
+              onClick={() => fileInputRef.current?.click()}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-text-muted hover:text-text-secondary hover:bg-bg-tertiary transition-all cursor-pointer text-xs"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              title="Attach a file"
+            >
+              <Paperclip size={14} />
+              <span>Attach File</span>
+            </motion.button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              accept=".txt,.md,.csv,.json,.ts,.tsx,.js,.jsx,.py,.java,.cpp,.c,.html,.css,.pdf,.png,.jpg,.jpeg,.gif,.webp"
+              onChange={handleFileSelect}
+            />
+          </div>
+
           <span
             className={`text-xs ${
               inputValue.length > maxChars * 0.9
@@ -110,6 +203,39 @@ export default function PromptGenerator({
           </span>
         </div>
       </div>
+
+      {/* Attached File Display */}
+      <AnimatePresence>
+        {attachedFile && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="mt-3"
+          >
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-bg-tertiary border border-glass-border">
+              {attachedFile.type.startsWith('image/') ? (
+                <Image size={16} className="text-accent-purple flex-shrink-0" />
+              ) : (
+                <FileText size={16} className="text-accent-blue flex-shrink-0" />
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-text-primary truncate">{attachedFile.name}</p>
+                <p className="text-[10px] text-text-muted">{formatFileSize(attachedFile.size)}</p>
+              </div>
+              <motion.button
+                onClick={removeFile}
+                className="p-1 rounded-md hover:bg-glass-bg-hover text-text-muted hover:text-accent-pink transition-colors cursor-pointer"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <X size={14} />
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Generate Button */}
       <div className="mt-4">
@@ -123,7 +249,7 @@ export default function PromptGenerator({
             {isGenerating ? (
               <span className="flex items-center justify-center gap-2">
                 <LoadingSpinner size="sm" />
-                Optimizing Prompt...
+                Optimizing...
               </span>
             ) : (
               <span className="flex items-center justify-center gap-2">
@@ -134,12 +260,6 @@ export default function PromptGenerator({
           </NeonButton>
         </motion.div>
       </div>
-
-      {/* Subtle background glow */}
-      <div
-        className="absolute -bottom-20 -right-20 w-60 h-60 rounded-full opacity-[0.03] blur-3xl pointer-events-none"
-        style={{ backgroundColor: platformColor }}
-      />
     </GlassCard>
   );
 }

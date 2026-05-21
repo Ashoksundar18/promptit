@@ -122,7 +122,7 @@ export default function Features() {
             const Icon = feature.icon;
             return (
               <motion.div key={feature.title} variants={cardVariants}>
-                <GlassCard hover glow="blue">
+                <GlassCard>
                   <div className="p-6">
                     {/* Icon */}
                     <div

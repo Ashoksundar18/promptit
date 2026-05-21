@@ -40,6 +40,7 @@ export const metadata: Metadata = {
 };
 
 import AuthProvider from "@/components/providers/AuthProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 export default function RootLayout({
   children,
@@ -49,12 +50,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${outfit.variable} dark`}
+      className={`${inter.variable} ${outfit.variable}`}
+      suppressHydrationWarning
     >
       <body className="min-h-screen bg-bg-primary text-text-primary font-sans antialiased">
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

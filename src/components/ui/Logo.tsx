@@ -14,27 +14,16 @@ const sizeConfig = {
   lg: { text: 'text-4xl', icon: 28, gap: 'gap-3' },
 };
 
-export default function Logo({ size = 'md', animated = false }: LogoProps) {
+export default function Logo({ size = 'md' }: LogoProps) {
   const config = sizeConfig[size];
 
   return (
     <div className={`inline-flex items-center ${config.gap}`}>
-      <div
-        className={`${animated ? 'animate-pulse-glow' : ''} rounded-lg p-1`}
-        style={{
-          background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(139, 92, 246, 0.2))',
-        }}
-      >
-        <Zap
-          size={config.icon}
-          className="text-accent-blue"
-          style={{
-            filter: animated ? 'drop-shadow(0 0 6px rgba(0, 212, 255, 0.6))' : undefined,
-          }}
-        />
+      <div className="rounded-lg p-1 bg-accent-blue/10">
+        <Zap size={config.icon} className="text-accent-blue" />
       </div>
       <span
-        className={`font-heading font-bold ${config.text} gradient-blue-purple gradient-text`}
+        className={`font-heading font-bold ${config.text} text-text-primary`}
       >
         Prompt It
       </span>

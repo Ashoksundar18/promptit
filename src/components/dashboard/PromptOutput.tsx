@@ -11,6 +11,7 @@ import {
   ChevronUp,
   Lightbulb,
   Sparkles,
+  Eye,
 } from 'lucide-react';
 import GlassCard from '@/components/ui/GlassCard';
 import type { GeneratedPrompt } from '@/lib/ai-engine';
@@ -41,6 +42,7 @@ export default function PromptOutput({
 }: PromptOutputProps) {
   const [copied, setCopied] = useState(false);
   const [tipsOpen, setTipsOpen] = useState(false);
+  const [exampleOpen, setExampleOpen] = useState(false);
 
   const handleCopy = async () => {
     if (!result) return;
@@ -49,7 +51,6 @@ export default function PromptOutput({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback for older browsers
       const textarea = document.createElement('textarea');
       textarea.value = result.optimizedPrompt;
       document.body.appendChild(textarea);
@@ -74,12 +75,12 @@ export default function PromptOutput({
     <AnimatePresence mode="wait">
       {result && (
         <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -20, scale: 0.97 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
         >
-          <GlassCard className="neon-border-blue relative overflow-hidden">
+          <GlassCard className="relative overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -92,8 +93,8 @@ export default function PromptOutput({
                 <span
                   className="px-2.5 py-1 rounded-full text-xs font-medium border"
                   style={{
-                    backgroundColor: `${badge.color}18`,
-                    borderColor: `${badge.color}40`,
+                    backgroundColor: `${badge.color}15`,
+                    borderColor: `${badge.color}30`,
                     color: badge.color,
                   }}
                 >
@@ -103,19 +104,19 @@ export default function PromptOutput({
             </div>
 
             {/* Prompt Content */}
-            <div className="rounded-xl bg-[rgba(0,0,0,0.3)] border border-glass-border p-4 mb-4">
+            <div className="rounded-xl bg-bg-tertiary border border-glass-border p-4 mb-4">
               <pre className="whitespace-pre-wrap text-sm leading-relaxed text-text-primary font-sans break-words">
                 {result.optimizedPrompt}
               </pre>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
               <motion.button
                 onClick={handleCopy}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass text-sm text-text-secondary hover:text-accent-blue hover:border-accent-blue/30 transition-all cursor-pointer"
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-bg-tertiary border border-glass-border text-sm text-text-secondary hover:text-accent-blue hover:border-accent-blue/30 transition-all cursor-pointer"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
               >
                 {copied ? (
                   <>
@@ -132,26 +133,26 @@ export default function PromptOutput({
 
               <motion.button
                 onClick={onToggleFavorite}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass text-sm transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-bg-tertiary border border-glass-border text-sm transition-all cursor-pointer ${
                   isFavorite
                     ? 'text-accent-pink border-accent-pink/30'
                     : 'text-text-secondary hover:text-accent-pink hover:border-accent-pink/30'
                 }`}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
               >
                 <Heart
                   size={14}
                   className={isFavorite ? 'fill-accent-pink' : ''}
                 />
-                <span>{isFavorite ? 'Favorited' : 'Favorite'}</span>
+                <span>{isFavorite ? 'Saved' : 'Save'}</span>
               </motion.button>
 
               <motion.button
                 onClick={onRegenerate}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass text-sm text-text-secondary hover:text-accent-purple hover:border-accent-purple/30 transition-all cursor-pointer"
-                whileHover={{ scale: 1.04, rotate: 5 }}
-                whileTap={{ scale: 0.96, rotate: -5 }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-bg-tertiary border border-glass-border text-sm text-text-secondary hover:text-accent-purple hover:border-accent-purple/30 transition-all cursor-pointer"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
               >
                 <RefreshCw size={14} />
                 <span>Regenerate</span>
@@ -171,19 +172,54 @@ export default function PromptOutput({
                   {result.qualityScore}/100
                 </span>
               </div>
-              <div className="w-full h-2 rounded-full bg-[rgba(255,255,255,0.05)] overflow-hidden">
+              <div className="w-full h-2 rounded-full bg-bg-tertiary overflow-hidden">
                 <motion.div
                   className="h-full rounded-full"
-                  style={{
-                    backgroundColor: qualityColor,
-                    boxShadow: `0 0 8px ${qualityColor}60`,
-                  }}
+                  style={{ backgroundColor: qualityColor }}
                   initial={{ width: 0 }}
                   animate={{ width: `${result.qualityScore}%` }}
-                  transition={{ duration: 1, ease: 'easeOut', delay: 0.3 }}
+                  transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
                 />
               </div>
             </div>
+
+            {/* Example Output Preview */}
+            {result.exampleOutput && (
+              <div className="mb-4">
+                <motion.button
+                  onClick={() => setExampleOpen(!exampleOpen)}
+                  className="flex items-center gap-2 text-sm text-text-secondary hover:text-accent-blue transition-colors cursor-pointer w-full"
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Eye size={14} />
+                  <span className="font-medium">
+                    Example Output Preview
+                  </span>
+                  {exampleOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                </motion.button>
+
+                <AnimatePresence>
+                  {exampleOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="mt-3 overflow-hidden"
+                    >
+                      <div className="rounded-xl bg-bg-tertiary border border-glass-border p-4">
+                        <p className="text-[10px] uppercase tracking-wider text-text-muted mb-2 font-medium">
+                          What the AI might respond with:
+                        </p>
+                        <pre className="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary font-sans break-words">
+                          {result.exampleOutput}
+                        </pre>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
 
             {/* Tips Section */}
             {result.tips && result.tips.length > 0 && (
@@ -195,7 +231,7 @@ export default function PromptOutput({
                 >
                   <Lightbulb size={14} />
                   <span className="font-medium">
-                    Prompt Tips ({result.tips.length})
+                    Tips ({result.tips.length})
                   </span>
                   {tipsOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 </motion.button>
@@ -225,9 +261,6 @@ export default function PromptOutput({
                 </AnimatePresence>
               </div>
             )}
-
-            {/* Background glow */}
-            <div className="absolute -top-10 -left-10 w-40 h-40 rounded-full bg-accent-blue/[0.03] blur-3xl pointer-events-none" />
           </GlassCard>
         </motion.div>
       )}

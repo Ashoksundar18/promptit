@@ -12,7 +12,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="h-screen flex overflow-hidden bg-bg-primary gradient-mesh">
+    <div className="h-screen flex overflow-hidden bg-bg-primary transition-colors duration-300">
       {/* Mobile hamburger button */}
       <motion.button
         onClick={() => setMobileMenuOpen(true)}

@@ -59,8 +59,8 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-bg-primary">
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-accent-blue/10 rounded-full blur-[120px] mix-blend-screen" />
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent-purple/10 rounded-full blur-[120px] mix-blend-screen" />
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-accent-blue/5 rounded-full blur-[120px] " />
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-accent-purple/5 rounded-full blur-[120px] " />
       </div>
 
       <motion.div
@@ -100,7 +100,7 @@ export default function SignupPage() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-glass-bg border border-glass-border focus:border-accent-blue focus:shadow-[0_0_15px_rgba(0,212,255,0.15)] outline-none text-text-primary text-sm transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-bg-tertiary border border-glass-border focus:border-accent-blue  outline-none text-text-primary text-sm transition-all"
                   placeholder="John Doe"
                 />
               </div>
@@ -117,7 +117,7 @@ export default function SignupPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-glass-bg border border-glass-border focus:border-accent-blue focus:shadow-[0_0_15px_rgba(0,212,255,0.15)] outline-none text-text-primary text-sm transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-bg-tertiary border border-glass-border focus:border-accent-blue  outline-none text-text-primary text-sm transition-all"
                   placeholder="you@example.com"
                   required
                 />
@@ -135,7 +135,7 @@ export default function SignupPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-glass-bg border border-glass-border focus:border-accent-blue focus:shadow-[0_0_15px_rgba(0,212,255,0.15)] outline-none text-text-primary text-sm transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-bg-tertiary border border-glass-border focus:border-accent-blue  outline-none text-text-primary text-sm transition-all"
                   placeholder="••••••••"
                   required
                 />

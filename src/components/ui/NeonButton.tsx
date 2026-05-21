@@ -23,35 +23,20 @@ const sizeClasses = {
 
 const variantStyles = {
   primary: {
-    base: 'bg-gradient-to-r from-accent-blue to-accent-purple text-white font-semibold',
-    hover: {
-      boxShadow: '0 0 15px rgba(0, 212, 255, 0.5), 0 0 30px rgba(139, 92, 246, 0.3)',
-      scale: 1.03,
-    },
+    base: 'bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold shadow-sm',
+    hover: { scale: 1.02, y: -1 },
   },
   secondary: {
-    base: 'bg-accent-purple/20 text-accent-purple border border-accent-purple/30 font-medium',
-    hover: {
-      boxShadow: '0 0 15px rgba(139, 92, 246, 0.4)',
-      scale: 1.03,
-      backgroundColor: 'rgba(139, 92, 246, 0.3)',
-    },
+    base: 'bg-accent-purple/15 text-accent-purple border border-accent-purple/25 font-medium',
+    hover: { scale: 1.02 },
   },
   outline: {
-    base: 'glass text-text-primary font-medium border border-glass-border',
-    hover: {
-      boxShadow: '0 0 10px rgba(0, 212, 255, 0.3)',
-      scale: 1.03,
-      borderColor: 'rgba(0, 212, 255, 0.4)',
-    },
+    base: 'bg-bg-elevated text-text-primary font-medium border border-glass-border',
+    hover: { scale: 1.02, y: -1 },
   },
   ghost: {
     base: 'bg-transparent text-text-secondary font-medium',
-    hover: {
-      backgroundColor: 'rgba(255, 255, 255, 0.06)',
-      scale: 1.02,
-      color: '#f0f0f5',
-    },
+    hover: { scale: 1.02 },
   },
 };
 
@@ -72,7 +57,7 @@ export default function NeonButton({
       type={type}
       className={`
         inline-flex items-center justify-center
-        transition-colors duration-200
+        transition-all duration-200
         ${sizeClasses[size]}
         ${styles.base}
         ${disabled || loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}

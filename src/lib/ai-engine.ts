@@ -13,6 +13,7 @@ export interface GeneratedPrompt {
   category: PromptCategory;
   tips: string[];
   qualityScore: number;
+  exampleOutput: string;
 }
 
 // ─── Category-specific role/context mapping ───
@@ -673,6 +674,7 @@ export function generateOptimizedPrompt(
       category,
       tips: ['Start by describing what you want to achieve — even a rough idea works!'],
       qualityScore: 0,
+      exampleOutput: '',
     };
   }
 
@@ -691,11 +693,35 @@ export function generateOptimizedPrompt(
   const tips = generateTips(platform, category, complexity);
   const qualityScore = calculateQualityScore(trimmedInput, platform);
 
+  const exampleOutput = generateExampleOutput(trimmedInput, category);
+
   return {
     optimizedPrompt,
     platform,
     category,
     tips,
     qualityScore,
+    exampleOutput,
   };
+}
+
+// ─── Example Output Generator ───
+
+function generateExampleOutput(input: string, category: PromptCategory): string {
+  const keywords = extractKeywords(input).slice(0, 3).join(', ');
+  const topic = input.length > 50 ? input.substring(0, 50) + '...' : input;
+
+  const examples: Record<PromptCategory, string> = {
+    study: `## Key Concepts: ${keywords || 'Topic Overview'}\n\nHere's a structured breakdown of "${topic}":\n\n**1. Core Definition**\nA clear, concise explanation of the fundamental concept...\n\n**2. Key Principles**\n- Principle A: Detailed explanation with examples\n- Principle B: How it connects to real-world applications\n\n**3. Practice Questions**\n- Q1: Test your understanding of the basics\n- Q2: Apply the concept to a scenario\n\n**4. Summary**\nA brief recap tying all concepts together for easy revision.`,
+
+    content: `# ${keywords ? keywords.charAt(0).toUpperCase() + keywords.slice(1) : 'Your Topic'}\n\n*A compelling introduction that hooks the reader and establishes the value of this content...*\n\n## Why This Matters\nContextual background that positions this topic as important and timely for your audience...\n\n## Key Insights\n1. **First major point** — Supporting evidence and practical takeaway\n2. **Second major point** — Data-backed insight with actionable advice\n3. **Third major point** — Expert perspective with real examples\n\n## Takeaway\nA strong closing that summarizes value and includes a clear call-to-action.`,
+
+    developer: `\`\`\`typescript\n// Solution for: ${topic}\n\ninterface Config {\n  // Type-safe configuration\n  option: string;\n  enabled: boolean;\n}\n\nexport function solve(input: Config): Result {\n  // Implementation with error handling\n  try {\n    const processed = processInput(input);\n    return { success: true, data: processed };\n  } catch (error) {\n    return { success: false, error: error.message };\n  }\n}\n\`\`\`\n\n**Explanation:** Clean, production-ready code with proper error handling and TypeScript types.`,
+
+    business: `## Executive Summary\n\n**Opportunity:** ${topic}\n\n### Market Analysis\n- Market size: Estimated growth trajectory\n- Target segment: Key demographics and behaviors\n- Competitive landscape: 3 main competitors and differentiation\n\n### Recommended Strategy\n1. **Short-term (0-3 months):** Quick wins and validation\n2. **Mid-term (3-6 months):** Scale and optimize\n3. **Long-term (6-12 months):** Market leadership\n\n### Projected ROI\n- Conservative estimate: 15-20% improvement\n- Key metrics to track: Conversion, retention, revenue`,
+
+    creative: `## Creative Concept: "${keywords || 'Untitled'}"\n\n**Visual Style:** Modern, minimalist with bold accent colors\n\n**Mood Board:**\n- Clean lines with organic textures\n- Color palette: Deep navy, warm gold, soft cream\n- Typography: Sans-serif headers, serif body text\n\n**Concept Description:**\nImagine a scene where ${topic || 'your idea comes to life'} — the atmosphere is rich with detail, each element carefully composed to evoke emotion and tell a story...\n\n**Execution Notes:**\n- Start with a strong focal point\n- Layer depth through contrast and spacing\n- End with a memorable visual signature`,
+  };
+
+  return examples[category] || examples.content;
 }

@@ -129,7 +129,7 @@ export default function AICards() {
             const Icon = platform.icon;
             return (
               <motion.div key={platform.slug} variants={cardVariants}>
-                <GlassCard hover glow="blue">
+                <GlassCard>
                   <div className="p-6 flex flex-col h-full group">
                     {/* Icon */}
                     <div
