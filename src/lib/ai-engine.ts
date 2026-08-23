@@ -797,18 +797,22 @@ export function generateOptimizedPrompt(
   const isImageRequest = /\b(image|photo|picture|make my|look like|style|visual|recreate)\b/i.test(trimmedInput) || trimmedInput.includes('[Attached image:');
 
   if (isImageRequest) {
-    const prompt = `[PROMPT FOR ${platform.toUpperCase()}]
-Transform the reference image I attached into the following style:
+    const userNotes = trimmedInput.replace(/\[Attached image:.*\]/gi, '').trim();
 
-## Visual Style & Aesthetics
-- Subject & Pose: Preserve the subject's key facial features, posture, and expression while matching the streetwear aesthetic.
-- Typography & Overlay: Transcribe and overlay text in a bold, 3D condensed sans-serif font layered behind/around the subject.
-- Lighting & Atmosphere: Dramatic street lighting with volumetric highlights, neon purple/blue edge glows, and subtle lens flare.
-- Outfit & Details: Oversized grey hoodie, wide-leg tactical cargo trousers, clean white sneakers, and dark sunglasses.
-- Camera & Framing: Full-body vertical portrait shot, 35mm lens perspective, soft background bokeh depth of field.
+    const prompt = `[IMAGE-TO-IMAGE STYLE TRANSFER PROMPT FOR ${platform.toUpperCase()}]
 
-## Instructions for AI:
-Apply these visual style elements to my uploaded photo while keeping my facial identity intact.`;
+## Core Instruction for ${platform}:
+Apply the exact visual style, typography, and aesthetic of my reference photo to my uploaded image while preserving key identity features.
+
+## Visual Elements & Composition:
+- Subject & Pose: Match the posture, hand placement, and body angle from the reference photo.
+- Typography & Text Overlay: ${userNotes ? `Overlay exact text: "${userNotes}"` : 'Transcribe and layer all visible text in bold glowing typography positioned behind the subject.'}
+- Lighting & Aura: Accentuate the subject with a neon outline aura glow, moody street lighting, and subtle lens flare.
+- Outfit & Styling: Match the urban streetwear outfit, fit, and accessories shown in the reference image.
+- Camera & Framing: Full-body vertical portrait (9:16 aspect ratio), eye-level framing, soft background depth of field.
+
+## Execution Guidance:
+Blend this visual style directly onto the uploaded reference photo with high image fidelity.`;
 
     return {
       optimizedPrompt: prompt,
@@ -816,11 +820,11 @@ Apply these visual style elements to my uploaded photo while keeping my facial i
       category,
       tips: [
         'Upload your reference photo alongside this prompt on the target platform.',
-        'Adjust the typography text in quotes to your preferred caption or slogan.',
-        'Use weight parameters (e.g., --iw 2.0 in Midjourney) for stronger image fidelity.',
+        'If using Gemini or ChatGPT, attach your selfie + reference image together.',
+        'You can edit the text in quotes to any custom slogan you prefer.',
       ],
       qualityScore: 96,
-      exampleOutput: 'AI will generate a stylized vertical portrait matching your uploaded photo with neon glow and 3D text overlays.',
+      exampleOutput: 'The target AI will apply the neon aura, typography layering, and street aesthetic to your uploaded photo.',
     };
   }
 

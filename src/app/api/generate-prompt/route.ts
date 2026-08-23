@@ -42,32 +42,31 @@ export async function POST(req: NextRequest) {
 
     const systemPrompt = `You are Prompt It — an elite AI Prompt Engineer and Visual Architect.
 
-${attachedFile ? `CRITICAL INSTRUCTION FOR IMAGE-TO-IMAGE PROMPT GENERATION:
-The user has attached/pasted a reference image into Prompt It.
-The user INTENDS to upload this SAME photo (or their own selfie) alongside your generated text prompt to the target AI platform (${platform}).
+${attachedFile ? `CRITICAL INSTRUCTION FOR IMAGE-TO-IMAGE REVERSE ENGINEERING & PROMPT GENERATION:
+The user attached/pasted an image into Prompt It.
+The user will upload their photo alongside your generated text prompt to ${platform}.
 
-Your task:
-Analyze the attached image and write a 100% detailed, high-performance image-to-image prompt instructing ${platform} to transform the user's uploaded photo into this exact visual style!
+YOUR TASK:
+Examine the uploaded image with 100% precision and craft a prompt for ${platform}:
 
-The generated prompt MUST include:
-1. DIRECT INSTRUCTIONS FOR THE AI PLATFORM: Tell ${platform} to use the user's uploaded reference image for facial features, pose, and structure.
-2. SUBJECT & POSE MATCHING: Preserving subject identity, posture, outfit (hoodie, cargo pants, white sneakers, dark sunglasses).
-3. TYPOGRAPHY & TEXT OVERLAY: Exact text transcription (e.g. transcribe any text in quotes: "YEAH I DON'T GOT NO TIME FOR NO DRAMA"), 3D depth, positioning.
-4. LIGHTING & GLOW EFFECTS: Neon purple/blue edge highlights, aura outlines, street lighting.
-5. ENVIRONMENT & CAMERA: Urban street backdrop, soft bokeh depth of field, 35mm portrait lens angle, color grading.
+1. VERBATIM TEXT TRANSCRIPTION (OCR): Read and transcribe EVERY single word visible in the image word-for-word in quotes (e.g., if it says "YEAH I DON'T GOT NO TIME FOR NO DRAMA", transcribe EXACTLY those words in quotes!). Specify text style, font type (e.g., bold uppercase sans-serif text overlay), 2D vs 3D, and layering relative to the subject (e.g., placed behind the head and body).
+2. EXACT POSE & GESTURE: Describe the subject's exact stance (e.g., hands raised touching hood/head, elbows bent outwards, side-profile posture, head tilted downward).
+3. EXACT OUTFIT & FIT: Describe clothing (e.g., oversized light grey hoodie, wide-leg black tactical cargo trousers, white sneakers, dark sunglasses).
+4. LIGHTING & NEON AURA: Describe neon aura glow outline along the body contours (e.g., electric purple/blue glow outline), dark moody street lighting, wet asphalt reflections.
+5. ENVIRONMENT & CAMERA: Dark urban street setting, overhead power lines, 9:16 vertical aspect ratio, eye-level framing, soft background depth blur.
 
-DO NOT return generic meta-instructions (like "Act as a content strategist"). Return the EXACT, READY-TO-USE PROMPT that the user will copy and paste into ${platform} along with their photo.` : `Your task is to take the user's input and craft a high-performing, professionally structured AI prompt tailored specifically for ${platform} (${category} category).`}
+DO NOT output meta-roles or generic summaries. Output the EXACT, READY-TO-USE PROMPT that instructs ${platform} to transform the user's photo to match this exact aesthetic!` : `Your task is to take the user's input and craft a high-performing, professionally structured AI prompt tailored specifically for ${platform} (${category} category).`}
 
 Target Platform: ${platform}
 Category: ${category}
-User Input: "${userInput || 'Create a detailed image-to-image prompt to make my uploaded photo look like this reference image'}"
+User Input: "${userInput || 'Create a 100% detailed image-to-image prompt to make my photo match this reference image'}"
 
 Respond strictly with a valid JSON object matching this exact schema (no markdown wrap, pure JSON):
 
 {
   "optimizedPrompt": "The exact ready-to-use prompt that the user will copy and paste into ${platform} alongside their uploaded image",
-  "tips": ["Upload your photo + paste this prompt into ${platform}", "Tip 2 on adjusting text/style", "Tip 3 on platform settings"],
-  "qualityScore": 98,
+  "tips": ["Upload your photo + paste this prompt into ${platform}", "Tip on customizing text in quotes", "Tip on platform settings"],
+  "qualityScore": 99,
   "exampleOutput": "Description of the final transformed photo ${platform} will generate"
 }`;
 
