@@ -21,12 +21,14 @@ export async function POST(req: NextRequest) {
       where: { email: email.toLowerCase() },
     });
 
-    // Always return success to prevent email enumeration attacks
     if (!user) {
-      return NextResponse.json({
-        message: 'If an account with that email exists, a reset link has been generated.',
-        // In production: send a real email here
-      });
+      return NextResponse.json(
+        {
+          message: 'No account found with this email address.',
+          userExists: false,
+        },
+        { status: 404 }
+      );
     }
 
     // Invalidate existing tokens for this email
@@ -48,13 +50,9 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // In production, send email with reset link:
-    // const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`;
-    // await sendEmail(email, resetUrl);
-
     return NextResponse.json({
-      message: 'If an account with that email exists, a reset link has been generated.',
-      // For demo purposes, return the token directly
+      message: 'Password reset link created successfully.',
+      userExists: true,
       token,
     });
   } catch (error: any) {

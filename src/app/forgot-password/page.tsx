@@ -73,31 +73,30 @@ export default function ForgotPasswordPage() {
                   <CheckCircle size={24} className="text-accent-green" />
                 </div>
               </div>
-              <h2 className="text-lg font-semibold text-text-primary">Check your email</h2>
+              <h2 className="text-lg font-semibold text-text-primary">Reset Link Ready!</h2>
               <p className="text-sm text-text-secondary">
-                If an account with that email exists, a password reset link has been sent.
+                We verified your account <span className="font-medium text-text-primary">{email}</span>. Click below to set your new password.
               </p>
 
-              {/* Demo: direct reset link (remove in production with real email) */}
               {resetToken && (
-                <div className="mt-4 p-3 rounded-xl bg-accent-blue/10 border border-accent-blue/20">
-                  <p className="text-xs text-text-muted mb-2">Demo mode — reset link:</p>
-                  <Link
-                    href={`/reset-password?token=${resetToken}`}
-                    className="text-sm text-accent-blue hover:underline break-all"
-                  >
-                    Click here to reset your password
+                <div className="pt-2">
+                  <Link href={`/reset-password?token=${resetToken}`}>
+                    <NeonButton variant="primary" className="w-full justify-center">
+                      Reset Password Now →
+                    </NeonButton>
                   </Link>
                 </div>
               )}
 
-              <Link
-                href="/login"
-                className="inline-flex items-center gap-1.5 text-sm text-accent-blue hover:text-accent-blue/80 transition-colors mt-2"
-              >
-                <ArrowLeft size={14} />
-                Back to Sign In
-              </Link>
+              <div className="pt-2">
+                <Link
+                  href="/login"
+                  className="inline-flex items-center gap-1.5 text-sm text-accent-blue hover:text-accent-blue/80 transition-colors"
+                >
+                  <ArrowLeft size={14} />
+                  Back to Sign In
+                </Link>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
