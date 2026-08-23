@@ -17,15 +17,21 @@ export async function sendPasswordResetEmail({ to, resetUrl }: SendResetEmailPar
     return false;
   }
 
-  const transporter = nodemailer.createTransport({
-    host,
-    port,
-    secure: port === 465, // true for 465, false for other ports
-    auth: {
-      user,
-      pass,
-    },
-  });
+  const isGmail = host.includes('gmail') || user?.endsWith('@gmail.com');
+
+  const transporter = nodemailer.createTransport(
+    isGmail
+      ? {
+          service: 'gmail',
+          auth: { user, pass },
+        }
+      : {
+          host,
+          port,
+          secure: port === 465,
+          auth: { user, pass },
+        }
+  );
 
   const htmlContent = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; background-color: #0f172a; color: #f8fafc; border-radius: 16px;">
