@@ -105,3 +105,17 @@ model UserStats {
 
   @@map("user_stats")
 }
+
+// Password reset tokens
+model PasswordReset {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  email     String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([email])
+  @@map("password_resets")
+}
