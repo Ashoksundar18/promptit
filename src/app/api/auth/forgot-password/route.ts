@@ -55,13 +55,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       message: 'If an account with that email exists, a reset link has been generated.',
       // For demo purposes, return the token directly
-      // Remove this in production and send via email instead
       token,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Forgot password error:', error);
+    const errMessage = error?.message || 'Database error occurred. Please try again.';
     return NextResponse.json(
-      { message: 'Something went wrong' },
+      { message: errMessage },
       { status: 500 }
     );
   }

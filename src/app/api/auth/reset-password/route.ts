@@ -71,10 +71,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       message: 'Password has been reset successfully. You can now sign in.',
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Reset password error:', error);
+    const errMessage = error?.message || 'Database error occurred. Please try again.';
     return NextResponse.json(
-      { message: 'Something went wrong' },
+      { message: errMessage },
       { status: 500 }
     );
   }
