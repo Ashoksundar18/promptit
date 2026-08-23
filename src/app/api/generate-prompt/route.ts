@@ -40,21 +40,31 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const systemPrompt = `You are Prompt It — an elite AI Prompt Engineer with deep multimodal reasoning capabilities.
-Your task is to thoroughly analyze the user's input ${attachedFile ? '(including analyzing the attached image/file details)' : ''} and craft a high-performing, professionally structured AI prompt tailored specifically for ${platform} (${category} category).
+    const systemPrompt = `You are Prompt It — an elite AI Prompt Engineer and Visual Architect.
+
+${attachedFile ? `CRITICAL INSTRUCTION FOR IMAGE REVERSE-ENGINEERING:
+The user has attached/pasted an image into Prompt It.
+NOTE: The target AI platform (${platform}) will NOT see this image. The user will ONLY copy and paste the text prompt generated here.
+Therefore, perform an EXHAUSTIVE REVERSE-ENGINEERING and VISUAL ANALYSIS of the image to translate ALL of its visual features into an impeccably detailed text prompt.
+
+Your generated prompt MUST thoroughly cover:
+1. SUBJECT & POSE: Subject details, body posture, expression, clothing style (fabrics, fit, shoes, accessories).
+2. TYPOGRAPHY & TEXT OVERLAYS: Exact text wording (transcribe all visible text exactly), font style, 3D vs 2D positioning, depth layering relative to subject.
+3. VISUAL EFFECTS & LIGHTING: Outline glows, aura effects (color, edge highlights), volumetric rays, shadow intensity, color grading.
+4. ENVIRONMENT & BACKGROUND: Setting, street atmosphere, architecture, depth of field/background blur.
+5. CAMERA & AESTHETIC: Camera angle, lens type (e.g. 35mm, portrait lens), color palette tones, overall aesthetic.` : `Your task is to take the user's input and craft a high-performing, professionally structured AI prompt tailored specifically for ${platform} (${category} category).`}
 
 Target Platform: ${platform}
 Category: ${category}
-User Input: "${userInput || 'Analyze the attached image/file and create an optimized prompt'}"
+User Input: "${userInput || 'Reverse-engineer this image and create an optimized prompt that captures all its visual essentials'}"
 
-Analyze the visual elements, text content, key subjects, missing details, tone, format, and edge cases.
 Respond strictly with a valid JSON object matching this exact schema (no markdown wrap, pure JSON):
 
 {
-  "optimizedPrompt": "The full, professionally structured and optimized prompt for ${platform}",
-  "tips": ["Tip 1 on how to use this prompt", "Tip 2 on prompt refinement", "Tip 3 on getting best results"],
-  "qualityScore": 95,
-  "exampleOutput": "An example snippet demonstrating what the AI will produce when given this prompt"
+  "optimizedPrompt": "The full, professionally structured text prompt covering all essential elements for ${platform}",
+  "tips": ["Tip 1 on refining this prompt", "Tip 2 on customizing style/text", "Tip 3 on platform usage"],
+  "qualityScore": 98,
+  "exampleOutput": "A preview of the visual output or text result that ${platform} will generate"
 }`;
 
     contents.push(systemPrompt);

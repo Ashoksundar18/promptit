@@ -195,6 +195,43 @@ export default function PromptGenerator({
 
   const platformColor = platformColors[selectedPlatform] || '#3b82f6';
 
+  const handlePaste = useCallback(async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.type.startsWith('image/')) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (!file) continue;
+
+        try {
+          const dataUrl = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+
+          const base64 = dataUrl.split(',')[1] || '';
+          const name = `pasted-image-${Date.now()}.${file.type.split('/')[1] || 'png'}`;
+
+          setAttachedFile({
+            name,
+            size: file.size,
+            type: file.type || 'image/png',
+            content: `[Attached image: ${name}]`,
+            base64,
+          });
+        } catch {
+          alert('Failed to process pasted image');
+        }
+        break;
+      }
+    }
+  }, []);
+
   return (
     <GlassCard className="relative overflow-hidden">
       {/* Header */}
@@ -213,7 +250,8 @@ export default function PromptGenerator({
         <textarea
           value={inputValue}
           onChange={(e) => onInputChange(e.target.value.slice(0, maxChars))}
-          placeholder="Describe what you need... e.g., 'Write a blog post about quantum computing for beginners'"
+          onPaste={handlePaste}
+          placeholder="Describe what you need, or paste (Ctrl+V) / attach an image to reverse-engineer it into a text prompt..."
           rows={5}
           className="w-full px-4 py-3 rounded-xl bg-bg-tertiary border border-glass-border text-text-primary placeholder:text-text-muted resize-none focus:outline-none focus:border-accent-blue/50 transition-all duration-200 text-sm leading-relaxed"
         />
