@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { sendPasswordResetEmail } from '@/lib/email';
 import crypto from 'crypto';
 
 // POST /api/auth/forgot-password
-// Creates a password reset token and returns it
-// In production, this would send an email
+// Creates a password reset token and sends an email
 export async function POST(req: NextRequest) {
   try {
     const { email } = await req.json();
@@ -50,9 +50,22 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Build reset link
+    const origin = req.headers.get('origin') || process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    const resetUrl = `${origin}/reset-password?token=${token}`;
+
+    // Attempt to send email
+    const emailSent = await sendPasswordResetEmail({
+      to: email.toLowerCase(),
+      resetUrl,
+    });
+
     return NextResponse.json({
-      message: 'Password reset link created successfully.',
+      message: emailSent
+        ? 'Password reset email sent to your inbox.'
+        : 'Password reset link created successfully.',
       userExists: true,
+      emailSent,
       token,
     });
   } catch (error: any) {

@@ -13,6 +13,7 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
   const [resetToken, setResetToken] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,7 +35,9 @@ export default function ForgotPasswordPage() {
       }
 
       setSuccess(true);
-      // For demo: show the token so user can reset
+      if (data.emailSent) {
+        setEmailSent(true);
+      }
       if (data.token) {
         setResetToken(data.token);
       }
@@ -73,9 +76,13 @@ export default function ForgotPasswordPage() {
                   <CheckCircle size={24} className="text-accent-green" />
                 </div>
               </div>
-              <h2 className="text-lg font-semibold text-text-primary">Reset Link Ready!</h2>
-              <p className="text-sm text-text-secondary">
-                We verified your account <span className="font-medium text-text-primary">{email}</span>. Click below to set your new password.
+              <h2 className="text-lg font-semibold text-text-primary">
+                {emailSent ? 'Check Your Gmail Inbox!' : 'Reset Link Generated!'}
+              </h2>
+              <p className="text-sm text-text-secondary leading-relaxed">
+                {emailSent
+                  ? `An email has been sent to ${email}. Please check your inbox and spam folder.`
+                  : `Account verified for ${email}. Click below to set a new password directly.`}
               </p>
 
               {resetToken && (
