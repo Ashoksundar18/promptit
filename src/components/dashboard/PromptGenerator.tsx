@@ -120,30 +120,55 @@ export default function PromptGenerator({
 
     setIsGenerating(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-
     // Combine input with file content if attached
     let fullInput = inputValue;
     if (attachedFile) {
       fullInput += `\n\n--- Attached File: ${attachedFile.name} ---\n${attachedFile.content}`;
     }
 
-    const result = generateOptimizedPrompt(
-      fullInput,
-      selectedPlatform,
-      selectedCategory
-    );
+    try {
+      const res = await fetch('/api/generate-prompt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userInput: fullInput,
+          platform: selectedPlatform,
+          category: selectedCategory,
+        }),
+      });
 
-    addToHistory({
-      userInput: inputValue,
-      optimizedPrompt: result.optimizedPrompt,
-      platform: selectedPlatform,
-      category: selectedCategory,
-      qualityScore: result.qualityScore ?? 0,
-    });
+      let result: GeneratedPrompt;
 
-    onGenerated(result);
-    setIsGenerating(false);
+      if (res.ok) {
+        result = await res.json();
+      } else {
+        result = generateOptimizedPrompt(
+          fullInput,
+          selectedPlatform,
+          selectedCategory
+        );
+      }
+
+      addToHistory({
+        userInput: inputValue,
+        optimizedPrompt: result.optimizedPrompt,
+        platform: selectedPlatform,
+        category: selectedCategory,
+        qualityScore: result.qualityScore ?? 0,
+      });
+
+      onGenerated(result);
+    } catch (err) {
+      console.warn('Network error, using fallback local generator:', err);
+      const fallbackResult = generateOptimizedPrompt(
+        fullInput,
+        selectedPlatform,
+        selectedCategory
+      );
+      onGenerated(fallbackResult);
+    } finally {
+      setIsGenerating(false);
+    }
   }, [inputValue, attachedFile, selectedPlatform, selectedCategory, isGenerating, addToHistory, onGenerated]);
 
   const platformColor = platformColors[selectedPlatform] || '#3b82f6';
