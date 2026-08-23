@@ -5,36 +5,49 @@ import type { AIPlatform, PromptCategory } from '@/lib/ai-engine';
 
 export async function POST(req: NextRequest) {
   try {
-    const { userInput, platform, category } = await req.json();
+    const { userInput, platform, category, attachedFile } = await req.json();
 
-    if (!userInput || !userInput.trim()) {
-      return NextResponse.json({ message: 'User input is required' }, { status: 400 });
+    if ((!userInput || !userInput.trim()) && !attachedFile) {
+      return NextResponse.json({ message: 'User input or attached file is required' }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_KEY;
+    const userApiKey = req.headers.get('x-user-api-key');
+    const apiKey = userApiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_KEY;
 
     // Fallback to local AI engine if no Gemini API key is configured
     if (!apiKey) {
       const localResult = generateOptimizedPrompt(
-        userInput,
+        userInput || (attachedFile ? attachedFile.name : ''),
         (platform as AIPlatform) || 'chatgpt',
         (category as PromptCategory) || 'content'
       );
       return NextResponse.json(localResult);
     }
 
-    // Call Google Gemini API for real LLM reasoning & prompt engineering
+    // Call Google Gemini API for real LLM multimodal reasoning & prompt engineering
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    const systemPrompt = `You are Prompt It — an elite AI Prompt Engineer.
-Your task is to take a simple user request and transform it into an expertly crafted, high-performing AI prompt tailored specifically for the target platform (${platform}) and category (${category}).
+    const contents: any[] = [];
+
+    // Attach image/file data for Gemini Multimodal Vision if present
+    if (attachedFile && attachedFile.base64) {
+      contents.push({
+        inlineData: {
+          data: attachedFile.base64,
+          mimeType: attachedFile.type || 'image/png',
+        },
+      });
+    }
+
+    const systemPrompt = `You are Prompt It — an elite AI Prompt Engineer with deep multimodal reasoning capabilities.
+Your task is to thoroughly analyze the user's input ${attachedFile ? '(including analyzing the attached image/file details)' : ''} and craft a high-performing, professionally structured AI prompt tailored specifically for ${platform} (${category} category).
 
 Target Platform: ${platform}
 Category: ${category}
-User Input: "${userInput}"
+User Input: "${userInput || 'Analyze the attached image/file and create an optimized prompt'}"
 
-Analyze the user's core intent, missing details, tone, format, and edge cases.
+Analyze the visual elements, text content, key subjects, missing details, tone, format, and edge cases.
 Respond strictly with a valid JSON object matching this exact schema (no markdown wrap, pure JSON):
 
 {
@@ -44,7 +57,9 @@ Respond strictly with a valid JSON object matching this exact schema (no markdow
   "exampleOutput": "An example snippet demonstrating what the AI will produce when given this prompt"
 }`;
 
-    const result = await model.generateContent(systemPrompt);
+    contents.push(systemPrompt);
+
+    const result = await model.generateContent(contents);
     const responseText = result.response.text();
 
     // Clean up potential markdown formatting in JSON response

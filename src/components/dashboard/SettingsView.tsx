@@ -1,14 +1,38 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, Sun, Moon, Check, Eye, EyeOff } from 'lucide-react';
+import { Lock, Sun, Moon, Check, Eye, EyeOff, Cpu } from 'lucide-react';
 import GlassCard from '@/components/ui/GlassCard';
 import NeonButton from '@/components/ui/NeonButton';
 import { useTheme } from '@/components/providers/ThemeProvider';
 
 export default function SettingsView() {
   const { theme, toggleTheme } = useTheme();
+
+  // AI Model state
+  const [aiProvider, setAiProvider] = useState('gemini');
+  const [apiKey, setApiKey] = useState('');
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [aiSavedMessage, setAiSavedMessage] = useState('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedProvider = localStorage.getItem('promptit_user_ai_provider');
+      const storedKey = localStorage.getItem('promptit_user_api_key');
+      if (storedProvider) setAiProvider(storedProvider);
+      if (storedKey) setApiKey(storedKey);
+    }
+  }, []);
+
+  const handleSaveAiConfig = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('promptit_user_ai_provider', aiProvider);
+      localStorage.setItem('promptit_user_api_key', apiKey.trim());
+      setAiSavedMessage('AI Model settings saved successfully!');
+      setTimeout(() => setAiSavedMessage(''), 3000);
+    }
+  };
 
   // Password change state
   const [currentPassword, setCurrentPassword] = useState('');
@@ -107,6 +131,74 @@ export default function SettingsView() {
                 {theme === 'dark' ? <Moon size={12} className="text-accent-purple" /> : <Sun size={12} className="text-accent-orange" />}
               </motion.div>
             </button>
+          </div>
+        </GlassCard>
+      </motion.div>
+
+      {/* AI Model Configuration */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+      >
+        <GlassCard>
+          <h3 className="text-base font-heading font-semibold text-text-primary mb-1 flex items-center gap-2">
+            <Cpu size={18} className="text-accent-blue" />
+            AI Model Integration
+          </h3>
+          <p className="text-xs text-text-muted mb-4">
+            Connect your custom AI Model API Key (Google Gemini, OpenAI, Claude, or Groq) for real LLM reasoning.
+          </p>
+
+          <div className="space-y-4">
+            {/* Provider Selection */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-text-secondary px-1">AI Provider</label>
+              <select
+                value={aiProvider}
+                onChange={(e) => setAiProvider(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl bg-bg-tertiary border border-glass-border focus:border-accent-blue/50 outline-none text-text-primary text-sm transition-all"
+              >
+                <option value="gemini">Google Gemini (Recommended - Free)</option>
+                <option value="openai">OpenAI (GPT-4o / GPT-3.5)</option>
+                <option value="claude">Anthropic Claude</option>
+                <option value="groq">Groq (Llama 3)</option>
+              </select>
+            </div>
+
+            {/* API Key */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-text-secondary px-1">API Key</label>
+              <div className="relative">
+                <input
+                  type={showApiKey ? 'text' : 'password'}
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="w-full px-4 py-2.5 pr-10 rounded-xl bg-bg-tertiary border border-glass-border focus:border-accent-blue/50 outline-none text-text-primary text-sm transition-all"
+                  placeholder={
+                    aiProvider === 'gemini' ? 'AIzaSy...' : 'sk-...'
+                  }
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowApiKey(!showApiKey)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary cursor-pointer"
+                >
+                  {showApiKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            {aiSavedMessage && (
+              <div className="p-2.5 rounded-xl bg-accent-green/10 border border-accent-green/20 text-accent-green text-xs text-center flex items-center justify-center gap-1.5">
+                <Check size={14} />
+                {aiSavedMessage}
+              </div>
+            )}
+
+            <NeonButton onClick={handleSaveAiConfig} className="w-full">
+              Save AI Model Settings
+            </NeonButton>
           </div>
         </GlassCard>
       </motion.div>

@@ -37,6 +37,7 @@ type AttachedFile = {
   size: number;
   type: string;
   content: string;
+  base64?: string;
 };
 
 type PromptGeneratorProps = {
@@ -81,11 +82,19 @@ export default function PromptGenerator({
 
     try {
       let content = '';
+      let base64 = '';
+
       if (file.type.startsWith('image/')) {
-        content = `[Attached image: ${file.name} (${(file.size / 1024).toFixed(1)}KB)]`;
+        const dataUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        base64 = dataUrl.split(',')[1] || '';
+        content = `[Attached image: ${file.name}]`;
       } else {
         content = await file.text();
-        // Limit content length
         if (content.length > 10000) {
           content = content.substring(0, 10000) + '\n\n[...content truncated at 10,000 characters]';
         }
@@ -94,8 +103,9 @@ export default function PromptGenerator({
       setAttachedFile({
         name: file.name,
         size: file.size,
-        type: file.type,
+        type: file.type || 'image/png',
         content,
+        base64,
       });
     } catch {
       alert('Failed to read file');
@@ -116,24 +126,36 @@ export default function PromptGenerator({
   };
 
   const handleGenerate = useCallback(async () => {
-    if (!inputValue.trim() || isGenerating) return;
+    if (!inputValue.trim() && !attachedFile || isGenerating) return;
 
     setIsGenerating(true);
 
-    // Combine input with file content if attached
     let fullInput = inputValue;
-    if (attachedFile) {
-      fullInput += `\n\n--- Attached File: ${attachedFile.name} ---\n${attachedFile.content}`;
+    if (attachedFile && !attachedFile.base64) {
+      fullInput += `\n\n--- Attached File (${attachedFile.name}) ---\n${attachedFile.content}`;
     }
+
+    const userApiKey = typeof window !== 'undefined' ? localStorage.getItem('promptit_user_api_key') || '' : '';
+    const userAiProvider = typeof window !== 'undefined' ? localStorage.getItem('promptit_user_ai_provider') || 'gemini' : 'gemini';
 
     try {
       const res = await fetch('/api/generate-prompt', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-api-key': userApiKey,
+          'x-user-ai-provider': userAiProvider,
+        },
         body: JSON.stringify({
           userInput: fullInput,
           platform: selectedPlatform,
           category: selectedCategory,
+          attachedFile: attachedFile ? {
+            name: attachedFile.name,
+            type: attachedFile.type,
+            content: attachedFile.content,
+            base64: attachedFile.base64,
+          } : null,
         }),
       });
 
