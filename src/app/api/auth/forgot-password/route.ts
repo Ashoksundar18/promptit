@@ -51,9 +51,10 @@ export async function POST(req: NextRequest) {
     });
 
     // Build reset link that guides the user to the reset password page
+    // Prioritize request host so it always uses the exact deployment domain
     const host = req.headers.get('x-forwarded-host') || req.headers.get('host');
     const proto = req.headers.get('x-forwarded-proto') || (host?.includes('localhost') ? 'http' : 'https');
-    const origin = process.env.NEXTAUTH_URL || (host ? `${proto}://${host}` : 'http://localhost:3000');
+    const origin = host ? `${proto}://${host}` : (process.env.NEXTAUTH_URL || 'http://localhost:3000');
     const resetUrl = `${origin}/reset-password?token=${token}`;
 
     // Attempt to send email
