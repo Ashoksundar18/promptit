@@ -64,12 +64,9 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({
-      message: emailSent
-        ? 'Password reset email sent to your inbox.'
-        : 'Password reset link created successfully.',
+      message: 'A password reset link has been sent to your Gmail inbox.',
       userExists: true,
       emailSent,
-      token,
     });
   } catch (error: any) {
     console.error('Forgot password error:', error);

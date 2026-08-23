@@ -13,8 +13,6 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
-  const [resetToken, setResetToken] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,12 +33,6 @@ export default function ForgotPasswordPage() {
       }
 
       setSuccess(true);
-      if (data.emailSent) {
-        setEmailSent(true);
-      }
-      if (data.token) {
-        setResetToken(data.token);
-      }
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -64,7 +56,7 @@ export default function ForgotPasswordPage() {
             Forgot Password
           </h1>
           <p className="text-text-secondary text-sm">
-            Enter your email and we&apos;ll help you reset your password
+            Enter your email and we&apos;ll send you a password reset link
           </p>
         </div>
 
@@ -77,25 +69,14 @@ export default function ForgotPasswordPage() {
                 </div>
               </div>
               <h2 className="text-lg font-semibold text-text-primary">
-                {emailSent ? 'Check Your Gmail Inbox!' : 'Reset Link Generated!'}
+                Check Your Gmail Inbox!
               </h2>
               <p className="text-sm text-text-secondary leading-relaxed">
-                {emailSent
-                  ? `An email has been sent to ${email}. Please check your inbox and spam folder.`
-                  : `Account verified for ${email}. Click below to set a new password directly.`}
+                A password reset link has been sent to <span className="font-medium text-text-primary">{email}</span>.
+                Please check your inbox (and spam folder) and click the link in the email to set a new password.
               </p>
 
-              {resetToken && (
-                <div className="pt-2">
-                  <Link href={`/reset-password?token=${resetToken}`}>
-                    <NeonButton variant="primary" className="w-full justify-center">
-                      Reset Password Now →
-                    </NeonButton>
-                  </Link>
-                </div>
-              )}
-
-              <div className="pt-2">
+              <div className="pt-4">
                 <Link
                   href="/login"
                   className="inline-flex items-center gap-1.5 text-sm text-accent-blue hover:text-accent-blue/80 transition-colors"
