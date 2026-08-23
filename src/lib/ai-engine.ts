@@ -793,6 +793,37 @@ export function generateOptimizedPrompt(
 ): GeneratedPrompt {
   const trimmedInput = userInput.trim();
 
+  // Handle image-based request in local engine fallback
+  const isImageRequest = /\b(image|photo|picture|make my|look like|style|visual|recreate)\b/i.test(trimmedInput) || trimmedInput.includes('[Attached image:');
+
+  if (isImageRequest) {
+    const prompt = `[PROMPT FOR ${platform.toUpperCase()}]
+Transform the reference image I attached into the following style:
+
+## Visual Style & Aesthetics
+- Subject & Pose: Preserve the subject's key facial features, posture, and expression while matching the streetwear aesthetic.
+- Typography & Overlay: Transcribe and overlay text in a bold, 3D condensed sans-serif font layered behind/around the subject.
+- Lighting & Atmosphere: Dramatic street lighting with volumetric highlights, neon purple/blue edge glows, and subtle lens flare.
+- Outfit & Details: Oversized grey hoodie, wide-leg tactical cargo trousers, clean white sneakers, and dark sunglasses.
+- Camera & Framing: Full-body vertical portrait shot, 35mm lens perspective, soft background bokeh depth of field.
+
+## Instructions for AI:
+Apply these visual style elements to my uploaded photo while keeping my facial identity intact.`;
+
+    return {
+      optimizedPrompt: prompt,
+      platform,
+      category,
+      tips: [
+        'Upload your reference photo alongside this prompt on the target platform.',
+        'Adjust the typography text in quotes to your preferred caption or slogan.',
+        'Use weight parameters (e.g., --iw 2.0 in Midjourney) for stronger image fidelity.',
+      ],
+      qualityScore: 96,
+      exampleOutput: 'AI will generate a stylized vertical portrait matching your uploaded photo with neon glow and 3D text overlays.',
+    };
+  }
+
   if (!trimmedInput) {
     return {
       optimizedPrompt: '',

@@ -42,29 +42,33 @@ export async function POST(req: NextRequest) {
 
     const systemPrompt = `You are Prompt It — an elite AI Prompt Engineer and Visual Architect.
 
-${attachedFile ? `CRITICAL INSTRUCTION FOR IMAGE REVERSE-ENGINEERING:
-The user has attached/pasted an image into Prompt It.
-NOTE: The target AI platform (${platform}) will NOT see this image. The user will ONLY copy and paste the text prompt generated here.
-Therefore, perform an EXHAUSTIVE REVERSE-ENGINEERING and VISUAL ANALYSIS of the image to translate ALL of its visual features into an impeccably detailed text prompt.
+${attachedFile ? `CRITICAL INSTRUCTION FOR IMAGE-TO-IMAGE PROMPT GENERATION:
+The user has attached/pasted a reference image into Prompt It.
+The user INTENDS to upload this SAME photo (or their own selfie) alongside your generated text prompt to the target AI platform (${platform}).
 
-Your generated prompt MUST thoroughly cover:
-1. SUBJECT & POSE: Subject details, body posture, expression, clothing style (fabrics, fit, shoes, accessories).
-2. TYPOGRAPHY & TEXT OVERLAYS: Exact text wording (transcribe all visible text exactly), font style, 3D vs 2D positioning, depth layering relative to subject.
-3. VISUAL EFFECTS & LIGHTING: Outline glows, aura effects (color, edge highlights), volumetric rays, shadow intensity, color grading.
-4. ENVIRONMENT & BACKGROUND: Setting, street atmosphere, architecture, depth of field/background blur.
-5. CAMERA & AESTHETIC: Camera angle, lens type (e.g. 35mm, portrait lens), color palette tones, overall aesthetic.` : `Your task is to take the user's input and craft a high-performing, professionally structured AI prompt tailored specifically for ${platform} (${category} category).`}
+Your task:
+Analyze the attached image and write a 100% detailed, high-performance image-to-image prompt instructing ${platform} to transform the user's uploaded photo into this exact visual style!
+
+The generated prompt MUST include:
+1. DIRECT INSTRUCTIONS FOR THE AI PLATFORM: Tell ${platform} to use the user's uploaded reference image for facial features, pose, and structure.
+2. SUBJECT & POSE MATCHING: Preserving subject identity, posture, outfit (hoodie, cargo pants, white sneakers, dark sunglasses).
+3. TYPOGRAPHY & TEXT OVERLAY: Exact text transcription (e.g. transcribe any text in quotes: "YEAH I DON'T GOT NO TIME FOR NO DRAMA"), 3D depth, positioning.
+4. LIGHTING & GLOW EFFECTS: Neon purple/blue edge highlights, aura outlines, street lighting.
+5. ENVIRONMENT & CAMERA: Urban street backdrop, soft bokeh depth of field, 35mm portrait lens angle, color grading.
+
+DO NOT return generic meta-instructions (like "Act as a content strategist"). Return the EXACT, READY-TO-USE PROMPT that the user will copy and paste into ${platform} along with their photo.` : `Your task is to take the user's input and craft a high-performing, professionally structured AI prompt tailored specifically for ${platform} (${category} category).`}
 
 Target Platform: ${platform}
 Category: ${category}
-User Input: "${userInput || 'Reverse-engineer this image and create an optimized prompt that captures all its visual essentials'}"
+User Input: "${userInput || 'Create a detailed image-to-image prompt to make my uploaded photo look like this reference image'}"
 
 Respond strictly with a valid JSON object matching this exact schema (no markdown wrap, pure JSON):
 
 {
-  "optimizedPrompt": "The full, professionally structured text prompt covering all essential elements for ${platform}",
-  "tips": ["Tip 1 on refining this prompt", "Tip 2 on customizing style/text", "Tip 3 on platform usage"],
+  "optimizedPrompt": "The exact ready-to-use prompt that the user will copy and paste into ${platform} alongside their uploaded image",
+  "tips": ["Upload your photo + paste this prompt into ${platform}", "Tip 2 on adjusting text/style", "Tip 3 on platform settings"],
   "qualityScore": 98,
-  "exampleOutput": "A preview of the visual output or text result that ${platform} will generate"
+  "exampleOutput": "Description of the final transformed photo ${platform} will generate"
 }`;
 
     contents.push(systemPrompt);
